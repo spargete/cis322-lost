@@ -8,13 +8,7 @@ tar -xzf osnap_legacy.tar.gz
 #to use a file as a command use -f filename
 
 ##TODO: write this stuff
-python3 python-script-to-generate-sql-files.py > sql-script1.sql
+python3 import_data.py > import_data.sql
 #Here the python script just has to print the import statements
-psql -d $1 -p $2 -f sql-script1.sql
-.
-.
-.
-rm sql-script1
-.
-.
-.
+psql -d $1 -p $2 -f import_data.sql
+rm import_data.sql
