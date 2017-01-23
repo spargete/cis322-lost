@@ -91,7 +91,7 @@ def import_NC_inventory():
 	next(NC_inventory)
 	s = next(NC_inventory)
 	print("INSERT INTO assets (asset_tag) VALUES ('{}');".format(s[0]))
-	print("UPDATE assets SET product_fk = (SELECT product_pk FROM products WHERE products.description = '{}') WHERE assets.asset_tag = '{}';".format(s[1], s[0]))
+	print("UPDATE assets SET product_fk = (SELECT product_pk FROM products WHERE products.description = '{}' AND products.vendor = 'big n large') WHERE assets.asset_tag = '{}';".format(s[1], s[0]))
 	print("INSERT INTO asset_at (asset_fk) SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}';".format(s[0]))
 	print("UPDATE asset_at SET arrive_dt = '{}' WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format('January 8, 2017', s[0]))
 	print("UPDATE asset_at SET depart_dt = '{}' WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format('December 31, 2020', s[0]))
