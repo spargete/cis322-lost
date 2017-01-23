@@ -31,7 +31,7 @@ def import_DC_inventory():
 		compartment = tag[0]
 		print("INSERT INTO security_tags (asset_fk) SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}';".format(s[0]))
 		print("UPDATE security_tags SET level_fk = (SELECT level_pk FROM levels WHERE levels.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(level, s[0]))
-		print("UPDATE security_tags SET compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}')".format(compartment, s[0]))
+		print("UPDATE security_tags SET compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(compartment, s[0]))
 
 	DC_file.close()
 
@@ -52,7 +52,7 @@ def import_HQ_inventory():
 		compartment = tag[0]
 		print("INSERT INTO security_tags (asset_fk) SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}';".format(s[0]))
 		print("UPDATE security_tags SET level_fk = (SELECT level_pk FROM levels WHERE levels.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(level, s[0]))
-		print("UPDATE security_tags SET compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}')".format(compartment, s[0]))
+		print("UPDATE security_tags SET compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(compartment, s[0]))
 
 	s = next(HQ_inventory)
 	print("INSERT INTO assets (asset_tag) VALUES ('{}');".format(s[0]))
@@ -65,7 +65,7 @@ def import_HQ_inventory():
 	compartment = tag[0]
 	print("INSERT INTO security_tags (asset_fk) SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}';".format(s[0]))
 	print("UPDATE security_tags SET level_fk = (SELECT level_pk FROM levels WHERE levels.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(level, s[0]))
-	print("UPDATE security_tags SET compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}')".format(compartment, s[0]))
+	print("UPDATE security_tags SET compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(compartment, s[0]))
 
 
 	HQ_file.close()
@@ -101,7 +101,7 @@ def import_NC_inventory():
 	compartment = tag[0]
 	print("INSERT INTO security_tags (asset_fk) SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}';".format(s[0]))
 	print("UPDATE security_tags SET level_fk = (SELECT level_pk FROM levels WHERE levels.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(level, s[0]))
-	print("UPDATE security_tags SET compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}')".format(compartment, s[0]))
+	print("UPDATE security_tags SET compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(compartment, s[0]))
 	
 	s = next(NC_inventory)
 	print("INSERT INTO products (description) VALUES ('{}');".format(s[1]))
@@ -125,7 +125,7 @@ def import_NC_inventory():
 	compartment = tag[0]
 	print("INSERT INTO security_tags (asset_fk) SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}';".format(s[0]))
 	print("UPDATE security_tags SET level_fk = (SELECT level_pk FROM levels WHERE levels.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(level, s[0]))
-	print("UPDATE security_tags SET compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}')".format(compartment, s[0]))
+	print("UPDATE security_tags SET compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(compartment, s[0]))
 
 	s = next(NC_inventory)
 	print("INSERT INTO products (description) VALUES ('{}');".format(s[1]))
@@ -139,7 +139,7 @@ def import_NC_inventory():
 	compartment = tag[0]
 	print("INSERT INTO security_tags (asset_fk) SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}';".format(s[0]))
 	print("UPDATE security_tags SET level_fk = (SELECT level_pk FROM levels WHERE levels.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(level, s[0]))
-	print("UPDATE security_tags SET compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}')".format(compartment, s[0]))
+	print("UPDATE security_tags SET compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(compartment, s[0]))
 
 	NC_file.close()
 
@@ -168,7 +168,7 @@ def import_SPNV_inventory():
 			compartment = tag[0]
 			print("INSERT INTO security_tags (asset_fk) SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}';".format(s[0]))
 			print("UPDATE security_tags SET level_fk = (SELECT level_pk FROM levels WHERE levels.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(level.lower(), s[0]))
-			print("UPDATE security_tags SET compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}')".format(compartment.lower(), s[0]))
+			print("UPDATE security_tags SET compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = '{}') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(compartment.lower(), s[0]))
 
 	SPNV_file.close()
 
