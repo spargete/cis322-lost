@@ -11,7 +11,7 @@ def import_convoy():
 			print("INSERT INTO assets (asset_tag, description) VALUES ('{}', 'vehicle');".format(vehicles[j].strip()))
 			print("INSERT INTO vehicles (asset_fk) SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}';".format(vehicles[j].strip()))
 			print("INSERT INTO used_by (convoy_fk) SELECT convoy_pk FROM convoys WHERE convoys.request = '{}';".format(s[0]))
-			print("UPDATE used_by SET used_by.vehicle_fk = (SELECT vehicle_pk FROM vehicles v WHERE v.asset_fk = (SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}')) WHERE u.convoy_fk = (SELECT convoy_pk FROM convoys WHERE convoys.request = '{}');".format(vehicles[j].strip(), s[0]))
+			print("UPDATE used_by SET used_by.vehicle_fk = (SELECT vehicle_pk FROM vehicles WHERE vehicles.asset_fk = (SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}')) WHERE used_by.convoy_fk = (SELECT convoy_pk FROM convoys WHERE convoys.request = '{}');".format(vehicles[j].strip(), s[0]))
 
 	convoy_file.close()
 
@@ -22,7 +22,7 @@ def import_DC_inventory():
 	for s in DC_inventory:
 		print("INSERT INTO products (description) VALUES ('{}');".format(s[1]))
 		print("INSERT INTO assets (asset_tag) VALUES ('{}');".format(s[0]))
-		print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products p WHERE p.description = '{}') WHERE a.asset_tag = '{}';".format(s[1], s[0]))
+		print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products WHERE products.description = '{}') WHERE assets.asset_tag = '{}';".format(s[1], s[0]))
 		print("INSERT INTO asset_at (asset_fk) SELECT asset_pk FROM assets WHERE asset_tag = '{}';".format(s[0]))
 		print("UPDATE asset_at SET asset_at.arrive_dt = '{}' WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format('January 10, 2017', s[0]))
 		print("UPDATE asset_at SET asset_at.facility_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'HQ') WHERE asset_at.asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(s[0]))
@@ -43,7 +43,7 @@ def import_HQ_inventory():
 		s = next(HQ_inventory)
 		print("INSERT INTO products (description) VALUES ('{}');".format(s[1]))
 		print("INSERT INTO assets (asset_tag) VALUES ('{}');".format(s[0]))
-		print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products p WHERE p.description = '{}') WHERE a.asset_tag = '{}';".format(s[1], s[0]))
+		print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products WHERE products.description = '{}') WHERE assets.asset_tag = '{}';".format(s[1], s[0]))
 		print("INSERT INTO asset_at (asset_fk) SELECT asset_pk FROM assets WHERE asset_tag = '{}';".format(s[0]))
 		print("UPDATE asset_at SET asset_at.arrive_dt = '{}' WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format('January 7, 2017', s[0]))
 		print("UPDATE asset_at SET asset_at.facility_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'HQ') WHERE asset_at.asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(s[0]))
@@ -56,7 +56,7 @@ def import_HQ_inventory():
 
 	s = next(HQ_inventory)
 	print("INSERT INTO assets (asset_tag) VALUES ('{}');".format(s[0]))
-	print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products p WHERE p.description = '{}') WHERE a.asset_tag = '{}';".format(s[1], s[0]))
+	print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products WHERE products.description = '{}') WHERE assets.asset_tag = '{}';".format(s[1], s[0]))
 	print("INSERT INTO asset_at (asset_fk) SELECT asset_pk FROM assets WHERE asset_tag = '{}';".format(s[0]))
 	print("UPDATE asset_at SET asset_at.arrive_dt = '{}' WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format('January 7, 2017', s[0]))
 	print("UPDATE asset_at SET asset_at.facility_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'HQ') WHERE asset_at.asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(s[0]))
@@ -77,7 +77,7 @@ def import_MB005_inventory():
 	for s in MB005_inventory:
 		print("INSERT INTO products (description) VALUES ('{}');".format(s[1]))
 		print("INSERT INTO assets (asset_tag) VALUES ('{}');".format(s[0]))
-		print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products p WHERE p.description = '{}') WHERE a.asset_tag = '{}';".format(s[1], s[0]))
+		print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products WHERE products.description = '{}') WHERE assets.asset_tag = '{}';".format(s[1], s[0]))
 		print("INSERT INTO asset_at (asset_fk) SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}';".format(s[0]))
 		print("UPDATE asset_at SET asset_at.arrive_dt = '{}' WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format('December 15, 2016', s[0]))
 		print("UPDATE asset_at SET asset_at.depart_dt = '{}' WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format('December 31, 2019', s[0]))
@@ -91,7 +91,7 @@ def import_NC_inventory():
 	next(NC_inventory)
 	s = next(NC_inventory)
 	print("INSERT INTO assets (asset_tag) VALUES ('{}');".format(s[0]))
-	print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products p WHERE p.description = '{}') WHERE a.asset_tag = '{}';".format(s[1], s[0]))
+	print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products WHERE products.description = '{}') WHERE assets.asset_tag = '{}';".format(s[1], s[0]))
 	print("INSERT INTO asset_at (asset_fk) SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}';".format(s[0]))
 	print("UPDATE asset_at SET asset_at.arrive_dt = '{}' WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format('January 8, 2017', s[0]))
 	print("UPDATE asset_at SET asset_at.depart_dt = '{}' WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format('December 31, 2020', s[0]))
@@ -106,7 +106,7 @@ def import_NC_inventory():
 	s = next(NC_inventory)
 	print("INSERT INTO products (description) VALUES ('{}');".format(s[1]))
 	print("INSERT INTO assets (asset_tag) VALUES ('{}');".format(s[0]))
-	print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products p WHERE p.description = '{}') WHERE a.asset_tag = '{}';".format(s[1], s[0]))
+	print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products WHERE products.description = '{}') WHERE assets.asset_tag = '{}';".format(s[1], s[0]))
 	print("INSERT INTO asset_at (asset_fk) SELECT asset_pk FROM assets where assets.asset_tag = '{}';".format(s[0]))
 	print("UPDATE asset_at SET asset_at.arrive_dt = '{}' WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format('January 8, 2017', s[0]))
 	print("UPDATE asset_at SET asset_at.depart_dt = '{}' WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format('December 31, 2021', s[0]))
@@ -115,7 +115,7 @@ def import_NC_inventory():
 	s = next(NC_inventory)
 	print("INSERT INTO products (description) VALUES ('{}');".format(s[1]))
 	print("INSERT INTO assets (asset_tag) VALUES ('{}');".format(s[0]))
-	print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products p WHERE p.description = '{}') WHERE a.asset_tag = '{}';".format(s[1], s[0]))
+	print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products WHERE products.description = '{}') WHERE assets.asset_tag = '{}';".format(s[1], s[0]))
 	print("INSERT INTO asset_at (asset_fk) SELECT asset_pk FROM assets where assets.asset_tag = '{}';".format(s[0]))
 	print("UPDATE asset_at SET asset_at.arrive_dt = '{}' WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format('January 8, 2017', s[0]))
 	print("UPDATE asset_at SET asset_at.depart_dt = '{}' WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format('December 31, 2017', s[0]))
@@ -130,7 +130,7 @@ def import_NC_inventory():
 	s = next(NC_inventory)
 	print("INSERT INTO products (description) VALUES ('{}');".format(s[1]))
 	print("INSERT INTO assets (asset_tag) VALUES ('{}');".format(s[0]))
-	print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products p WHERE p.description = '{}') WHERE a.asset_tag = '{}';".format(s[1], s[0]))
+	print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products WHERE products.description = '{}') WHERE assets.asset_tag = '{}';".format(s[1], s[0]))
 	print("INSERT INTO asset_at (asset_fk) SELECT asset_pk FROM assets where assets.asset_tag = '{}';".format(s[0]))
 	print("UPDATE asset_at SET asset_at.arrive_dt = '{}' WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format('January 8, 2017', s[0]))
 	print("UPDATE asset_at SET asset_at.facility_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'NC') WHERE asset_at.asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(s[0]))
@@ -151,17 +151,17 @@ def import_SPNV_inventory():
 		s = next(SPNV_inventory)
 		print("INSERT INTO products (description) VALUES ('{}');".format(s[1]))
 		print("INSERT INTO assets (asset_tag) VALUES ('{}');".format(s[0]))
-		print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products p WHERE p.description = '{}') WHERE a.asset_tag = '{}';".format(s[1], s[0]))
+		print("UPDATE assets SET assets.product_fk = (SELECT product_pk FROM products WHERE products.description = '{}') WHERE assets.asset_tag = '{}';".format(s[1], s[0]))
 		print("INSERT INTO asset_at (asset_fk) SELECT asset_pk FROM assets where assets.asset_tag = '{}';".format(s[0]))
 		print("UPDATE asset_at SET asset_at.facility_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'SPNV') WHERE asset_at.asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format(s[0]))
 		print("UPDATE asset_at SET asset_at.arrive_dt = '{}' WHERE asset_at.asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}');".format('January 8, 2017', s[0]))
 		if i == 0:
 			print("INSERT INTO security_tags (asset_fk) SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}';".format(s[0]))
-			print("UPDATE security_tags SET security_tags.level_fk = (SELECT level_pk FROM levels WHERE levels.abbrv = 'ts') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}') AND t.level_fk = null;".format(s[0]))
-			print("UPDATE security_tags SET security_tags.compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = 'et') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}') AND t.compartment_fk = null;".format(s[0]))
+			print("UPDATE security_tags SET security_tags.level_fk = (SELECT level_pk FROM levels WHERE levels.abbrv = 'ts') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}') AND security_tags.level_fk = null;".format(s[0]))
+			print("UPDATE security_tags SET security_tags.compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = 'et') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}') AND security_tags.compartment_fk = null;".format(s[0]))
 			print("INSERT INTO security_tags (asset_fk) SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}';".format(s[0]))
-			print("UPDATE security_tags SET security_tags.level_fk = (SELECT level_pk FROM levels WHERE levels.abbrv = 's') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}') AND t.level_fk = null;".format(s[0]))
-			print("UPDATE security_tags SET security_tags.compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = 'lgm') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}') AND t.compartment_fk = null;".format(s[0]))
+			print("UPDATE security_tags SET security_tags.level_fk = (SELECT level_pk FROM levels WHERE levels.abbrv = 's') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}') AND security_tags.level_fk = null;".format(s[0]))
+			print("UPDATE security_tags SET security_tags.compartment_fk = (SELECT compartment_pk FROM compartments WHERE compartments.abbrv = 'lgm') WHERE asset_fk = (SELECT asset_pk FROM assets WHERE asset_tag = '{}') AND security_tags.compartment_fk = null;".format(s[0]))
 		else:
 			tag = s[3].split(":")
 			level = tag[1]
@@ -222,25 +222,25 @@ def import_transit():
 		a = s[0].strip().split(",")
 		for j in range(len(a)):
 			print("INSERT INTO asset_on (asset_fk) SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}';".format(a[j].strip()))
-			print("UPDATE asset_on SET convoy_fk = (SELECT convoy_pk FROM convoys AS c WHERE convoys.request = '{}') WHERE asset_on.asset_fk = (SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}');".format(s[5], a[j].strip()))
+			print("UPDATE asset_on SET convoy_fk = (SELECT convoy_pk FROM convoys WHERE convoys.request = '{}') WHERE asset_on.asset_fk = (SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}');".format(s[5], a[j].strip()))
 			print("UPDATE asset_on SET load_dt = '{}' WHERE asset_on.asset_fk = (SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}');".format(s[3], a[j].strip()))
 			print("UPDATE asset_on SET unload_dt = '{}' WHERE asset_on.asset_fk = (SELECT asset_pk FROM assets WHERE assets.asset_tag = '{}');".format(s[4],a[j].strip()))
 
 		if i == 0:
-			print("UPDATE convoys SET convoys.source_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'MB005') WHERE c.request = '{}';".format(s[5]))
-			print("UPDATE convoys SET convoys.dest_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'HQ') WHERE c.request = '{}';".format(s[5]))
+			print("UPDATE convoys SET convoys.source_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'MB005') WHERE convoys.request = '{}';".format(s[5]))
+			print("UPDATE convoys SET convoys.dest_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'HQ') WHERE convoys.request = '{}';".format(s[5]))
 		
 		elif i == 1:
-			print("UPDATE convoys SET convoys.source_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'S300') WHERE c.request = '{}';".format(s[5]))
-			print("UPDATE convoys SET convoys.dest_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'NC') WHERE c.request = '{}';".format(s[5]))
+			print("UPDATE convoys SET convoys.source_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'S300') WHERE convoys.request = '{}';".format(s[5]))
+			print("UPDATE convoys SET convoys.dest_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'NC') WHERE convoys.request = '{}';".format(s[5]))
 
 		elif i == 2:
-			print("UPDATE convoys SET convoys.source_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'GL') WHERE c.request = '{}';".format(s[5]))
-			print("UPDATE convoys SET convoys.dest_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'SPNV') WHERE c.request = '{}';".format(s[5]))
+			print("UPDATE convoys SET convoys.source_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'GL') WHERE convoys.request = '{}';".format(s[5]))
+			print("UPDATE convoys SET convoys.dest_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'SPNV') WHERE convoys.request = '{}';".format(s[5]))
 
 		else:
-			print("UPDATE convoys SET convoys.source_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'LANM') WHERE c.request = '{}';".format(s[5]))
-			print("UPDATE convoys SET convoys.dest_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'DC') WHERE c.request = '{}';".format(s[5]))
+			print("UPDATE convoys SET convoys.source_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'LANM') WHERE convoys.request = '{}';".format(s[5]))
+			print("UPDATE convoys SET convoys.dest_fk = (SELECT facility_pk FROM facilities WHERE facilities.fcode = 'DC') WHERE convoys.request = '{}';".format(s[5]))
 		
 	transit_file.close()
 
