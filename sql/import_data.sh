@@ -8,7 +8,6 @@ tar -xzf osnap_legacy.tar.gz
 #to use a file as a command use -f filename
 cd osnap_legacy
 
-##TODO: write this stuff
 psql -d $1 -p $2 -f $HOME/cis322-lost/sql/create_tables.sql
 python3 $HOME/cis322-lost/sql/import_data.py > import_data.sql
 #Here the python script just has to print the import statements
