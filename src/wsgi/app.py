@@ -6,6 +6,6 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route('/report_filter', methods=['POST'])
+@app.route('/report_filter', methods=['POST',])
 def report_filter():
 	return render_template('report_filter.html')
