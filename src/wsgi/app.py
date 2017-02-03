@@ -15,12 +15,13 @@ def login():
 
 @app.route('/report_filter', methods=['GET', 'POST'])
 def report_filter():
-	url_for('report_filter')
 	if request.method == 'POST':
 		if request.form['filter'] == 'Facility':
 			return redirect(url_for('facility_report'))
 		elif request.form['filter'] == 'Transit':
 			return redirect(url_for('transit_report'))
+		else:
+			return redirect(url_for('logout'))
 	return render_template('report_filter.html')
 
 @app.route('/facility_report')
@@ -35,5 +36,5 @@ def transit_report():
 
 @app.route('/logout')
 def logout():
-	#For now, just return the page
+	session['logged_in'] = False
 	return render_template('logout.html')
