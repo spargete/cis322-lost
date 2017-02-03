@@ -20,8 +20,6 @@ def report_filter():
 			return redirect(url_for('facility_report'))
 		elif request.form['filter'] == 'Transit':
 			return redirect(url_for('transit_report'))
-		else:
-			return redirect(url_for('logout'))
 	return render_template('report_filter.html')
 
 @app.route('/facility_report')
