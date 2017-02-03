@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, url_for
+import psycopg2
 
 app = Flask(__name__)
 
@@ -7,7 +8,7 @@ def login():
 	if request.method == 'POST':
 		session['logged_in'] = True
 		return redirect(url_for('report_filter'))
-    return render_template('login.html')
+	return render_template('login.html')
 
 @app.route('/report_filter', methods=['GET', 'POST'])
 def report_filter():
