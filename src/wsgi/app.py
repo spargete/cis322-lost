@@ -15,6 +15,7 @@ def login():
 
 @app.route('/report_filter', methods=['GET', 'POST'])
 def report_filter():
+	url_for('report_filter')
 	if request.method == 'POST':
 		if request.form['filter'] == 'Facility':
 			return redirect(url_for('facility_report'))
