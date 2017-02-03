@@ -1,7 +1,10 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 import psycopg2
+from config import dbname, dbhost, dbport, secret_key
 
 app = Flask(__name__)
+
+app.config["SECRET_KEY"] = secret_key
 
 @app.route('/', methods = ['GET', 'POST'])
 def login():

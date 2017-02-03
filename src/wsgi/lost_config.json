@@ -1,0 +1,10 @@
+{
+	"database": {
+		"dbname": "lost",
+		"dbhost": "data_location",
+		"dbport": 5432
+	},
+	"session": {
+		"secret_key": "development_key"
+	}
+}
