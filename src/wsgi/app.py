@@ -28,7 +28,7 @@ def report_filter():
 def facility_report():
 	conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
 	cur = conn.cursor()
-	cur.execute("SELECT * FROM facilities WHERE fcode=%s",(session["filter_fcode"]))
+	cur.execute("SELECT * FROM facilities WHERE fcode=%s",(session["filter_fcode"],))
 	result = cur.fetchall()
 	facility_report = []
 	for r in result:
