@@ -16,6 +16,8 @@ def login():
 @app.route('/report_filter', methods=['GET', 'POST'])
 def report_filter():
 	if request.method == 'POST':
+		session["filter_date"] = request.form["filter_date"]
+		session["filter_fcode"] = request.form["filter_fcode"]
 		if request.form['filter'] == 'Facility':
 			return redirect(url_for('facility_report'))
 		elif request.form['filter'] == 'Transit':
@@ -24,7 +26,18 @@ def report_filter():
 
 @app.route('/facility_report')
 def facility_report():
-	#For now, just return the page
+	conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
+	cur = conn.cursor()
+	cur.execute("SELECT * FROM facilities WHERE fcode=%s",(session["filter_fcode"]))
+	result = cur.fetchall()
+	facility_report = []
+	for r in result:
+		row = dict()
+		row["fcode"] = r[1]
+		row["common_name"] = r[2]
+		facility_report.append(row)
+
+	session["facility_report"] = facility_report
 	return render_template('facility_report.html')
 
 @app.route('/transit_report')

@@ -1,6 +1,13 @@
 <html>
 	<head><title>Facility Report Page</title></head>
 	<body>
-		You have reached the <b>Facility Report page</b>. If this is not what you wanted, click <a href="{{url_for('report_filter')}}">here</a> to go back.
+		<table>
+			{% for entry in session.facility_report %}
+			<tr>
+				<td>{{ entry.fcode }}</td>
+				<td>{{ entry.common_name }}</td>
+			</tr>
+			{% endfor %}
+		</table>
 	</body>
 </html>
