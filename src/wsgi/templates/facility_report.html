@@ -4,8 +4,11 @@
 		<table>
 			{% for entry in session.facility_report %}
 			<tr>
-				<td>{{ entry.fcode }}</td>
 				<td>{{ entry.common_name }}</td>
+				<td>{{ entry.asset_tag }}</td>
+				<td>{{ entry.asset_description }}</td>
+				<td>{{ entry.arrive_dt }}</td>
+				<td>{{ entry.depart_dt }}</td>
 			</tr>
 			{% endfor %}
 		</table>

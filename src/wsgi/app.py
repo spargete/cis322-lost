@@ -28,13 +28,18 @@ def report_filter():
 def facility_report():
 	conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
 	cur = conn.cursor()
-	cur.execute("SELECT * FROM facilities WHERE fcode=%s",(session["filter_fcode"],))
+	cur.execute("SELECT facilities.common_name, assets.asset_tag, assets.description, asset_at.arrive_dt, asset_at.depart_dt FROM \
+	facilities inner join asset_at on facilities.facility_pk=asset_at.facility_fk inner join assets on asset_at.asset_fk=assets.asset_pk \
+	where facilities.fcode=%s and asset_at.arrive_dt<=%s and asset_at.depart_dt>=%s",(session["filter_fcode"],session["filter_date"],session["filter_date"]))
 	result = cur.fetchall()
 	facility_report = []
 	for r in result:
 		row = dict()
-		row["fcode"] = r[1]
-		row["common_name"] = r[2]
+		row["common_name"] = r[0]
+		row["asset_tag"] = r[1]
+		row["asset_description"] = r[2]
+		row["arrive_dt"] = r[3]
+		row["depart_dt"] = r[4]
 		facility_report.append(row)
 
 	session["facility_report"] = facility_report
