@@ -30,7 +30,7 @@ def facility_report():
 	cur = conn.cursor()
 	cur.execute("SELECT facilities.common_name, assets.asset_tag, assets.description, asset_at.arrive_dt, asset_at.depart_dt FROM \
 	facilities inner join asset_at on facilities.facility_pk=asset_at.facility_fk inner join assets on asset_at.asset_fk=assets.asset_pk \
-	where facilities.fcode=%s and asset_at.arrive_dt<=%s and asset_at.depart_dt>=%s",(session["filter_fcode"],session["filter_date"],session["filter_date"]))
+	where facilities.fcode=%s and asset_at.arrive_dt<=%s and asset_at.depart_dt>=%s;",(session["filter_fcode"],session["filter_date"],session["filter_date"]))
 	result = cur.fetchall()
 	facility_report = []
 	for r in result:
