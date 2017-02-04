@@ -10,4 +10,4 @@ bash import_data.sh $1 5432
 cd ..
 rm -rf osnap_legacy osnap_legacy.tar.gz
 
-cp -r cis322-lost/src/wsgi ~
+cp -r src/wsgi ~
