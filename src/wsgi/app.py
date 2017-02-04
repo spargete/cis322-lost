@@ -47,7 +47,30 @@ def facility_report():
 
 @app.route('/transit_report')
 def transit_report():
-	#For now, just return the page
+	conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
+	cur = conn.cursor()
+	cur.execute("SELECT facilities.common_name, assets.asset_tag, assets.description, asset_on.load_dt, asset_on.unload_dt, convoys.request \
+	FROM asset_on \
+	INNER JOIN convoys ON asset_on.convoy_fk=convoys.convoy_pk \
+	INNER JOIN assets ON asset_on.asset_fk=assets.asset_pk \
+	INNER JOIN facilities ON convoys.source_fk=facilities.facility_pk \
+	WHERE asset_on.load_dt<=%s \
+	AND asset_on.unload_dt>=%s;",(session["filter_date"],session["filter_date"]))
+	result = cur.fetchall()
+	transit_report = []
+	for r in result:
+		row = dict()
+		cur.execute("SELECT facilities.common_name FROM facilities INNER JOIN convoys ON convoys.dest_fk=facilities.facility_pk WHERE convoys.request=%s;", (r[5],))
+		dest = cur.fetchone()
+		row["source"] = r[0]
+		row["destination"] = dest[0]
+		row["asset_tag"] = r[1]
+		row["asset_description"] = r[2]
+		row["load_dt"] = r[3]
+		row["unload_dt"] = r[4]
+		transit_report.append(row)
+
+	session["transit_report"] = transit_report
 	return render_template('transit_report.html')
 
 @app.route('/logout')
