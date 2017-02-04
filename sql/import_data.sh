@@ -9,7 +9,7 @@ tar -xzf osnap_legacy.tar.gz
 cd osnap_legacy
 
 psql -d $1 -p $2 -f ../cis322-lost/sql/create_tables.sql
-python3 ../../cis322-lost/sql/import_data.py > import_data.sql
+python3 ../cis322-lost/sql/import_data.py > import_data.sql
 #Here the python script just has to print the import statements
 psql -d $1 -p $2 -f import_data.sql
 rm import_data.sql
