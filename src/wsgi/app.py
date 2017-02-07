@@ -77,3 +77,7 @@ def transit_report():
 def logout():
 	session['logged_in'] = False
 	return render_template('logout.html')
+
+@app.route('/rest')
+def rest():
+        return render_template('rest.html')
