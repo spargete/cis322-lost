@@ -80,4 +80,12 @@ def logout():
 
 @app.route('/rest')
 def rest():
-        return render_template('rest.html')
+	return render_template('rest.html')
+
+@app.route('/rest/lost_key')
+def lost_key():
+	return 0
+
+@app.route('/rest/activate_user')
+def activate_user():
+	#some sort of SQL query and json parsing stuff for later
