@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 import psycopg2
 from config import dbname, dbhost, dbport, secret_key
+import json
 
 app = Flask(__name__)
 
@@ -86,6 +87,31 @@ def rest():
 def lost_key():
 	return 0
 
-@app.route('/rest/activate_user')
+@app.route('/rest/activate_user', methods=("POST",))
 def activate_user():
-	#some sort of SQL query and json parsing stuff for later
+	if request.method = "POST" and "signature" in request.form and request.form["signature"] != "" and "arguments" in request.form:
+
+	elif request.method = "POST" and "arguments" in request.form:
+		req = json.loads(request.form["arguments"])
+		dat = dict()
+		dat["timestamp"] = req["timestamp"]
+		#SQL query stuff to do the thing >_>
+		conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
+		cur = conn.cursor()
+		cur.execute("SELECT user_pk, active FROM users WHERE username=%s;", (req["username"],))
+		try:
+			result = cur.fetchone()
+		except ProgrammingError:
+			result = None
+
+		if result == None:
+			dat["result"] = "NEW"
+			cur.execute("INSERT INTO users (username, active) VALUES ('{}', TRUE)".format(req["username"]))
+		elif result[1] == False:
+			dat["result"] = "OK"
+			cur.execute("UPDATE users SET active=TRUE WHERE username='{}'".format(req["username"]))
+		else:
+			dat["result"] = "FAIL"
+
+		data = json.dumps(dat)
+		return data
