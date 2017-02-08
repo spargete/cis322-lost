@@ -1,0 +1,11 @@
+<html>
+	<head><title>LOST API call description</title></head>
+	<body>
+		lost_key -- Takes no input and returns the LOST public key for encryption and decryption purposes. <br>
+		activate_user -- Reactivates LOST access for a user or generates a new user account as needed. <br>
+		suspend_user -- Revokes access for a user. If the user does not exist or is already inactive, this call has no effect. <br>
+		list_products -- Requests a listing of all products in LOST based on a filter criteria. Additional filters may be provided and additional data may be returned. The requests of the minimum form documented in the example must be accepted and the produced result must have at least the structure and fields of example provided. Asset information may not be provided by this call (e.g. no returning number of assets that are of product types). <br>
+		add_product -- Adds products to LOST. Takes a JSON as input, returns either "OK" or "FAIL". <br>
+		add_asset -- Adds a new asset to LOST. <br>
+	</body>
+</html>
