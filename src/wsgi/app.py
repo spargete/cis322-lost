@@ -157,3 +157,33 @@ def suspend_user():
 
 		data = json.dumps(dat)
 		return data
+
+@app.route('/rest/list_products')
+def list_products():
+	if request.method = "POST" and "signature" in request.form and request.form["signature"] != "" and "arguments" in request.form:
+
+	elif request.method = "POST" and "arguments" in request.form:
+		req = json.loads(request.form["arguments"])
+		dat = dict()
+		dat["timestamp"] = req["timestamp"]
+		##Told to steal code directly from Dan's implementation, so that's exactly what I'm going to do
+
+@app.route('/rest/add_products')
+def add_products():
+	if request.method = "POST" and "signature" in request.form and request.form["signature"] != "" and "arguments" in request.form:
+
+	elif request.method = "POST" and "arguments" in request.form:
+		req = json.loads(request.form["arguments"])
+		dat = dict()
+		dat["timestamp"] = req["timestamp"]
+		##TODO
+
+@app.route('/rest/add_asset')
+def add_asset():
+	if request.method = "POST" and "signature" in request.form and request.form["signature"] != "" and "arguments" in request.form:
+
+	elif request.method = "POST" and "arguments" in request.form:
+		req = json.loads(request.form["arguments"])
+		dat = dict()
+		dat["timestamp"] = req["timestamp"]
+		##TODO
