@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 import psycopg2
-from config import dbname, dbhost, dbport, secret_key
+from config import dbname, dbhost, dbport, secret_key, lost_pub
 import json
+
 
 app = Flask(__name__)
 
@@ -85,7 +86,23 @@ def rest():
 
 @app.route('/rest/lost_key')
 def lost_key():
-	return 0
+	if request.method = "POST" and "signature" in request.form and request.form["signature"] != "" and "arguments" in request.form:
+
+	elif request.method = "POST" and "arguments" in request.form:	
+		req = json.loads(request.form["arguments"])
+		dat = dict()
+		dat["timestamp"] = req["timestamp"]
+
+		with open(lost_key) as f:
+			key = f.read()
+			if key == '':
+				dat["result"] = "FAIL"
+			else:
+				dat["result"] = "OK"
+			dat["key"] = key
+
+		data = json.dumps(dat)
+		return data
 
 @app.route('/rest/activate_user', methods=("POST",))
 def activate_user():

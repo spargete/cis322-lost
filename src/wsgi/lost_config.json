@@ -6,5 +6,15 @@
 	},
 	"session": {
 		"secret_key": "development_key"
+	},
+	"crypto": {
+		"lost_priv": "~/cis322-lost/utils/lost.priv",
+		"lost_pub": "~/cis322-lost/utils/lost.pub",
+		"user_pub": "~/cis322-lost/utils/user.pub",
+		"prod_pub": "~/cis322-lost/utils/prod.pub"
+	},
+	"who": {
+		"who_pub": "~/cis322-lost/utils/who.pub",
+		"who_url": "http://petunia.cs.uoregon.edu:8080/who"
 	}
 }

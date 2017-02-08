@@ -10,3 +10,4 @@ with cpath.open() as conf:
 	dbhost = c['database']['dbhost']
 	dbport = c['database']['dbport']
 	secret_key = c['session']['secret_key']
+	lost_pub = c['crypto']['lost_pub']
