@@ -86,9 +86,7 @@ def rest():
 
 @app.route('/rest/lost_key')
 def lost_key():
-	if request.method = "POST" and "signature" in request.form and request.form["signature"] != "" and "arguments" in request.form:
-
-	elif request.method = "POST" and "arguments" in request.form:	
+	if request.method = "POST" and "arguments" in request.form:	
 		req = json.loads(request.form["arguments"])
 		dat = dict()
 		dat["timestamp"] = req["timestamp"]
@@ -106,9 +104,7 @@ def lost_key():
 
 @app.route('/rest/activate_user', methods=("POST",))
 def activate_user():
-	if request.method = "POST" and "signature" in request.form and request.form["signature"] != "" and "arguments" in request.form:
-
-	elif request.method = "POST" and "arguments" in request.form:
+	if request.method = "POST" and "arguments" in request.form:
 		req = json.loads(request.form["arguments"])
 		dat = dict()
 		dat["timestamp"] = req["timestamp"]
@@ -135,9 +131,7 @@ def activate_user():
 
 @app.route('/rest/suspend_user')
 def suspend_user():
-	if request.method = "POST" and "signature" in request.form and request.form["signature"] != "" and "arguments" in request.form:
-
-	elif request.method = "POST" and "arguments" in request.form:
+	if request.method = "POST" and "arguments" in request.form:
 		req = json.loads(request.form["arguments"])
 		dat = dict()
 		dat["timestamp"] = req["timestamp"]
@@ -160,30 +154,31 @@ def suspend_user():
 
 @app.route('/rest/list_products')
 def list_products():
-	if request.method = "POST" and "signature" in request.form and request.form["signature"] != "" and "arguments" in request.form:
-
-	elif request.method = "POST" and "arguments" in request.form:
+	if request.method = "POST" and "arguments" in request.form:
 		req = json.loads(request.form["arguments"])
 		dat = dict()
 		dat["timestamp"] = req["timestamp"]
 		##Told to steal code directly from Dan's implementation, so that's exactly what I'm going to do
+		###Never mind, return a json that matches the one given on the requirements document
 
 @app.route('/rest/add_products')
 def add_products():
-	if request.method = "POST" and "signature" in request.form and request.form["signature"] != "" and "arguments" in request.form:
-
-	elif request.method = "POST" and "arguments" in request.form:
+	if request.method = "POST" and "arguments" in request.form:
 		req = json.loads(request.form["arguments"])
 		dat = dict()
 		dat["timestamp"] = req["timestamp"]
 		##TODO
+		dat["result"] = "OK"
+		data = json.dumps(dat)
+		return data
 
 @app.route('/rest/add_asset')
 def add_asset():
-	if request.method = "POST" and "signature" in request.form and request.form["signature"] != "" and "arguments" in request.form:
-
-	elif request.method = "POST" and "arguments" in request.form:
+	if request.method = "POST" and "arguments" in request.form:
 		req = json.loads(request.form["arguments"])
 		dat = dict()
 		dat["timestamp"] = req["timestamp"]
 		##TODO
+		dat["result"] = "OK"
+		data = json.dumps(dat)
+		return data
