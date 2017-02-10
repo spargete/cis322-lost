@@ -159,7 +159,9 @@ def list_products():
 		dat = dict()
 		dat["timestamp"] = req["timestamp"]
 		##Told to steal code directly from Dan's implementation, so that's exactly what I'm going to do
-		###Never mind, return a json that matches the one given on the requirements document
+		dat["result"] = "OK"
+		data = json.dumps(dat)
+		return data
 
 @app.route('/rest/add_products')
 def add_products():
