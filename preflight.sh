@@ -6,8 +6,5 @@ if [ "$#" -ne 1 ]; then
 fi
 
 cd sql
-bash import_data.sh $1 5432
-cd ..
-rm -rf osnap_legacy osnap_legacy.tar.gz
-
-cp -r src/wsgi ~
+psql $1 -f create_tables.sql
+#cp -r src/wsgi ~
