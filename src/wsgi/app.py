@@ -13,7 +13,7 @@ def create_user():
 		cur = conn.cursor()
 		username = request.form['username']
 		password = request.form['password']
-		cur.execute('SELECT username FROM users WHERE username=%s', username)
+		cur.execute('SELECT username FROM users WHERE username=%s', (username,))
 		try:
 			result = cur.fetchone()
 		except ProgrammingError:
@@ -21,8 +21,10 @@ def create_user():
 
 		if result == None:
 			cur.execute('INSERT INTO users (username, password) VALUES (%s, %s)', (username, password))
+			conn.close()
 			return render_template('user_added.html')
 		else:
+			conn.close()
 			return render_template('user_exists.html')
 
 	return render_template('create_user.html')
