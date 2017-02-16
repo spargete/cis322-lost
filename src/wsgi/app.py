@@ -21,6 +21,7 @@ def create_user():
 
 		if result == None:
 			cur.execute('INSERT INTO users (username, password) VALUES (%s, %s)', (username, password))
+			conn.commit()
 			conn.close()
 			return render_template('user_added.html')
 		else:
