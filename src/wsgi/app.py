@@ -36,7 +36,7 @@ def create_user():
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
 	if request.method == 'POST':
-		conn.psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
+		conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
 		cur = conn.cursor()
 		username = request.form['username']
 		password = request.form['password']
@@ -52,5 +52,5 @@ def login():
 			session['username'] = username
 			session['logged_in'] = True
 			return redirect(url_for('dashboard'))
-			
+
 	return render_template('login.html')
