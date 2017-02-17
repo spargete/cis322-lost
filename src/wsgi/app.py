@@ -54,3 +54,7 @@ def login():
 			return redirect(url_for('dashboard'))
 
 	return render_template('login.html')
+
+@app.route('/dashboard', methods = ['GET',])
+def dashboard():
+	return render_template('dashboard.html')
