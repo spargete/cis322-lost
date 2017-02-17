@@ -33,7 +33,7 @@ def create_user():
 	return render_template('create_user.html')
 
 @app.route('/')
-@app.route('/login', methods ['GET', 'POST'])
+@app.route('/login', methods = ['GET', 'POST'])
 def login():
 	if request.method == 'POST':
 		conn.psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
