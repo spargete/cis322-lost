@@ -52,3 +52,5 @@ def login():
 			session['username'] = username
 			session['logged_in'] = True
 			return redirect(url_for('dashboard'))
+			
+	return render_template('login.html')
