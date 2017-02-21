@@ -11,9 +11,9 @@ CREATE TABLE roles (
 	role_name				varchar(32)
 );
 
-INSERT INTO roles (role_name) VALUES ("Logistics Officer");
+INSERT INTO roles (role_name) VALUES ('Logistics Officer');
 
-INSERT INTO roles (role_name) VALUES ("Facilities Officer");
+INSERT INTO roles (role_name) VALUES ('Facilities Officer');
 
 CREATE TABLE user_is (
 	role_fk					integer REFERENCES roles (role_pk),
