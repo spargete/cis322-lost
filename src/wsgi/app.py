@@ -13,14 +13,16 @@ def create_user():
 		cur = conn.cursor()
 		username = request.form['username']
 		password = request.form['password']
-		cur.execute('SELECT username FROM users WHERE username=%s', (username,))
+		role = request.form['role']
+		cur.execute('SELECT username FROM users WHERE username=%s;', (username,))
 		try:
 			result = cur.fetchone()
 		except ProgrammingError:
 			result = None
 
 		if result == None:
-			cur.execute('INSERT INTO users (username, password) VALUES (%s, %s)', (username, password))
+			cur.execute('INSERT INTO users (username, password) VALUES (%s, %s);', (username, password))
+			cur.execute('INSERT INTO user_is (role_fk, user_fk) VALUES ((SELECT role_pk FROM roles WHERE role_name=%s), (SELECT user_pk FROM users WHERE username=%s));', (role, username))
 			conn.commit()
 			cur.close()
 			conn.close()
@@ -40,7 +42,7 @@ def login():
 		cur = conn.cursor()
 		username = request.form['username']
 		password = request.form['password']
-		cur.execute('SELECT username, password FROM users WHERE username=%s AND password=%s', (username, password))
+		cur.execute('SELECT username, password FROM users WHERE username=%s AND password=%s;', (username, password))
 		try:
 			result = cur.fetchone()
 		except ProgrammingError:
