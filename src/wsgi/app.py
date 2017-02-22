@@ -60,3 +60,43 @@ def login():
 @app.route('/dashboard', methods = ['GET',])
 def dashboard():
 	return render_template('dashboard.html')
+
+
+@app.route('/add_facility', methods = ['GET', 'POST'])
+def add_facility():
+	conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
+	cur = conn.cursor()
+	cur.execute('SELECT facility_common_name, facility_fcode FROM facilities;')
+
+	try:
+		result = cur.fetchall()
+	except ProgrammingError:
+		result = None
+
+	facility_report = []
+	for r in result:
+		row = dict()
+		row['common_name'] = r[0]
+		row['fcode'] = r[1]
+		facility_report.append(row)
+
+	session['facility_report'] = facility_report
+	if request.method == 'POST':
+		fcode = request.form['fcode']
+		common_name = request.form['common_name']
+
+		cur.execute('SELECT facility_fcode, facility_common_name FROM facilities WHERE facility_fcode=%s OR facility_common_name=%s;', (fcode, common_name))
+
+		try:
+			result = cur.fetchone()
+		except ProgrammingError:
+			result = None
+
+		if result == None:
+			cur.execute('INSERT INTO facilities (facility_fcode, facility_common_name) VALUES (%s, %s);', (fcode, common_name))
+			return redirect(url_for('add_facility'))
+		else:
+			return render_template('facility_exists.html')
+
+
+	return render_template('add_facility.html')

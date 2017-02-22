@@ -1,0 +1,27 @@
+<html>
+	<head><title>LOST Add Facility Screen</title></head>
+	<body>
+		<table border="1">
+			<tr>
+				<th><b>Facility Name</b></th>
+				<th><b>Facility FCode</b></th>
+			</tr>
+			{% for entry in session.facility_report %}
+			<tr>
+				<th>{{entry.common_name}}</th>
+				<th>{{entry.fcode}}</th>
+			<tr>
+			{% endfor %}
+		</table>
+
+		<form action="{{url_for('add_facility')}}" method='POST'>
+			<dl>
+				<dt>Enter the common name of the facility (max 32 characters):
+				<dd><input type='text' name='common_name' maxlength=32>
+				<dt>Enter the FCode for the facility (max 6 characters):
+				<dd><input type='text' name='fcode' maxlength=6>
+			</dl>
+		</form> <br>
+		<a href="{{url_for('dashboard')}}">Back to dashboard</a>
+	</body>
+</html>
