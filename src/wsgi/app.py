@@ -112,7 +112,7 @@ def add_facility():
 	return render_template('add_facility.html')
 
 @app.route('/add_asset', methods = ['GET', 'POST'])
-def add_route():
+def add_asset():
 	conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
 	cur = conn.cursor()
 	cur.execute('SELECT a.asset_tag, a.description, aa.arrive_dt, aa.depart_dt, \
