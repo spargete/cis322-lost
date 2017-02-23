@@ -13,3 +13,7 @@ templates/add_facility.html -- shows a table with all the facilities currently i
 templates/add_asset.html -- shows a table with all the assets currently in the system and a form to add them
 templates/asset_exists.html -- shows some text that tells the user that the asset tag they are trying to create is already in the system
 templates/facility_exists.html -- shows some text that tells the user that the name or fcode they are trying to create is already in the system
+templates/dispose_asset.html -- shows a form that checks the database for the asset the user entered and marks it as disposed if it is there
+templates/asset_already_disposed.html -- shows some text that tells the user that the asset they are trying to dispose of was already disposed and the date on which it happened
+templates/no_matching_asset.html -- shows some text that informs the user that they entered an asset tag which does not exist in the system
+template/disposal_locked.html -- shows some text that tells the user that they should not be able to see the disposal screen

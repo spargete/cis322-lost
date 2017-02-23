@@ -28,11 +28,12 @@
 				<dd><input type='text' name='asset_tag' maxlength=16>
 				<dt>Enter the asset description:
 				<dd><input type='text' name='description'>
-					<!-- add remaining fields -->
+				<dt>Enter the location of the asset:
 				<dd><select name='facility_name'>
 					{% for entry in session.facility_list %}
 					<option value='{{entry.facility_name}}'>{{entry.facility_name}}</option>
 					{% endfor %}
+				<dt>Enter the date on which the asset was received:
 				<dd><input type='date' name='arrive_dt' value='1970-01-01'>
 				<dd><input type='submit' value='Add'>
 			</dl>

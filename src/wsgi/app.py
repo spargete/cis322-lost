@@ -179,3 +179,38 @@ def add_asset():
 			return render_template('asset_exists.html')
 
 	return render_template('add_asset.html')
+
+@app.route('/dispose_asset', methods = ['GET', 'POST'])
+def dispose_asset():
+	if session['role'] != 'Logistics Officer':
+		return render_template('disposal_locked.html')
+	if request.method == 'POST':
+		tag = request.form['asset_tag']
+		date = request.form['disposal_date']
+		conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
+		cur = conn.cursor()
+		cur.execute('SELECT disposed_dt FROM assets WHERE asset_tag=%s;', (tag,))
+
+		try:
+			result = cur.fetchone()
+		except ProgrammingError:
+			result = None
+
+		if result == None:
+			cur.close()
+			conn.close()
+			return render_template('no_matching_asset.html')
+		elif result[0] != None:
+			session['disposed_dt'] = result[0]
+			cur.close()
+			conn.close()
+			return render_template('asset_already_disposed.html')
+		else:
+			cur.execute('UPDATE assets SET disposed_dt=%s WHERE asset_tag=%s;', (date, tag))
+			cur.execute('UPDATE asset_at SET depart_dt=%s WHERE depart_dt=NULL AND asset_fk=(SELECT asset_pk FROM assets WHERE asset_tag=%s);', (date, tag))
+			conn.commit()
+			cur.close()
+			conn.close()
+			return redirect(url_for('dashboard'))
+
+	return render_template('dispose_asset.html')
