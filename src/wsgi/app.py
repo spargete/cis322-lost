@@ -49,8 +49,12 @@ def login():
 			result = None
 
 		if result == None:
+			cur.close()
+			conn.close()
 			return render_template('incorrect_credentials.html')
 		else:
+			cur.close()
+			conn.close()
 			session['username'] = username
 			session['logged_in'] = True
 			return redirect(url_for('dashboard'))
@@ -94,8 +98,13 @@ def add_facility():
 
 		if result == None:
 			cur.execute('INSERT INTO facilities (facility_fcode, facility_common_name) VALUES (%s, %s);', (fcode, common_name))
+			conn.commit()
+			cur.close()
+			conn.close()
 			return redirect(url_for('add_facility'))
 		else:
+			cur.close()
+			conn.close()
 			return render_template('facility_exists.html')
 
 
