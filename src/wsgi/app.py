@@ -42,7 +42,7 @@ def login():
 		cur = conn.cursor()
 		username = request.form['username']
 		password = request.form['password']
-		cur.execute('SELECT username, password FROM users WHERE username=%s AND password=%s;', (username, password))
+		cur.execute('SELECT username, password, role FROM users WHERE username=%s AND password=%s;', (username, password))
 		try:
 			result = cur.fetchone()
 		except ProgrammingError:
@@ -57,6 +57,7 @@ def login():
 			conn.close()
 			session['username'] = username
 			session['logged_in'] = True
+			session['role'] = result[2]
 			return redirect(url_for('dashboard'))
 
 	return render_template('login.html')
@@ -109,3 +110,72 @@ def add_facility():
 
 
 	return render_template('add_facility.html')
+
+@app.route('/add_asset', methods = ['GET', 'POST'])
+def add_route():
+	conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
+	cur = conn.cursor()
+	cur.execute('SELECT a.asset_tag, a.description, aa.arrive_dt, aa.depart_dt, \
+		f.facility_common_name, f.facility_fcode FROM assets AS a INNER JOIN \
+		asset_at AS aa ON aa.asset_fk=a.asset_pk INNER JOIN facilities AS f \
+		ON f.facility_pk=aa.facility_fk ORDER BY aa.arrive_dt ASC;')
+
+	try:
+		result = cur.fetchall()
+	except ProgrammingError:
+		result = None
+
+	asset_report = []
+	for r in result:
+		row = dict()
+		row['asset_tag'] = r[0]
+		row['description'] = r[1]
+		row['arrive_dt'] = r[2]
+		row['depart_dt'] = r[3]
+		row['facility_name'] = r[4]
+		row['facility_fcode'] = r[5]
+		asset_report.append(row)
+
+	session['asset_report'] = asset_report
+
+	cur.execute('SELECT facility_common_name FROM facilities;')
+	try:
+		result = cur.fetchall()
+	except ProgrammingError:
+		result = None
+
+	facility_list = []
+	for r in result:
+		row = dict()
+		row['facility_name'] = r[0]
+		facility_list.append(row)
+
+	session['facility_list'] = facility_list
+
+	if request.method == 'POST':
+		asset_tag = request.form['asset_tag']
+		description = request.form['description']
+		name = request.form['facility_name']
+		arrive_dt = request.form['arrive_dt']
+
+		cur.execute('SELECT asset_tag FROM assets WHERE asset_tag=%s', (asset_tag,))
+
+		try:
+			result = cur.fetchone()
+		except ProgrammingError:
+			result = None
+
+		if result == None:
+			cur.execute('INSERT INTO assets (asset_tag, description) VALUES (%s, %s);', (asset_tag, description))
+			cur.execute('INSERT INTO asset_at (asset_fk, facility_fk, arrive_dt) VALUES ((SELECT asset_pk FROM assets WHERE asset_tag=%s), \
+				(SELECT facility_pk FROM facilities WHERE facility_common_name=%s), %s);', (asset_tag, name, arrive_dt))
+			conn.commit()
+			cur.close()
+			conn.close()
+			return redirect(url_for('add_asset'))
+		else:
+			cur.close()
+			conn.close()
+			return render_template('asset_exists.html')
+
+	return render_template('add_asset.html')

@@ -1,0 +1,42 @@
+<html> 
+	<head><title>LOST Add Asset Screen</title></head>
+	<body>
+		<table border="1">
+			<tr>
+				<th>Asset Tag</th>
+				<th>Asset Description</th>
+				<th>Asset Location</th>
+				<th>Location FCode</th>
+				<th>Arrive Date</th>
+				<th>Depart Date</th>
+			</tr>
+			{% for entry in session.asset_report %}
+			<tr>
+				<td>{{entry.asset_tag}}</td>
+				<td>{{entry.description}}</td>
+				<td>{{entry.facility_name}}</td>
+				<td>{{entry.facility_fcode}}</td>
+				<td>{{entry.arrive_dt}}</td>
+				<td>{{entry.depart_dt}}</td>
+			<tr>
+			{% endfor %}
+		</table>
+
+		<form action="{{url_for('add_asset')}}" method='POST'>
+			<dl>
+				<dt>Enter the asset tag (max 16 characters):
+				<dd><input type='text' name='asset_tag' maxlength=16>
+				<dt>Enter the asset description:
+				<dd><input type='text' name='description'>
+					<!-- add remaining fields -->
+				<dd><select name='facility_name'>
+					{% for entry in session.facility_list %}
+					<option value='{{entry.facility_name}}'>{{entry.facility_name}}</option>
+					{% endfor %}
+				<dd><input type='date' name='arrive_dt' value='1970-01-01'>
+				<dd><input type='submit' value='Add'>
+			</dl>
+		</form> <br>
+		<a href="{{url_for('dashboard')}}">Back to dashboard</a>
+	</body>
+</html>
