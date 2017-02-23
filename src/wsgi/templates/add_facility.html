@@ -3,13 +3,13 @@
 	<body>
 		<table border="1">
 			<tr>
-				<th><b>Facility Name</b></th>
-				<th><b>Facility FCode</b></th>
+				<th>Facility Name</th>
+				<th>Facility FCode</th>
 			</tr>
 			{% for entry in session.facility_report %}
 			<tr>
-				<th>{{entry.common_name}}</th>
-				<th>{{entry.fcode}}</th>
+				<td>{{entry.common_name}}</td>
+				<td>{{entry.fcode}}</td>
 			<tr>
 			{% endfor %}
 		</table>
