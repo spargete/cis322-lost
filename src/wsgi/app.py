@@ -207,7 +207,7 @@ def dispose_asset():
 			return render_template('asset_already_disposed.html')
 		else:
 			cur.execute('UPDATE assets SET disposed_dt=%s WHERE asset_tag=%s;', (date, tag))
-			cur.execute('UPDATE asset_at SET depart_dt=%s WHERE depart_dt=NULL AND asset_fk=(SELECT asset_pk FROM assets WHERE asset_tag=%s);', (date, tag))
+			cur.execute('UPDATE asset_at SET depart_dt=%s WHERE arrive_dt=(SELECT MAX(arrive_dt) FROM asset_at WHERE asset_fk=(SELECT asset_pk FROM assets WHERE asset_tag=%s)) AND asset_fk=(SELECT asset_pk FROM assets WHERE asset_tag=%s);', (date, tag, tag))
 			conn.commit()
 			cur.close()
 			conn.close()
