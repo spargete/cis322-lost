@@ -42,7 +42,7 @@ def login():
 		cur = conn.cursor()
 		username = request.form['username']
 		password = request.form['password']
-		cur.execute('SELECT username, password, role FROM users WHERE username=%s AND password=%s;', (username, password))
+		cur.execute('SELECT username, password, role_name FROM users INNER JOIN user_is ON user_pk=user_fk INNER JOIN roles ON role_pk=role_fk WHERE username=%s AND password=%s;', (username, password))
 		try:
 			result = cur.fetchone()
 		except ProgrammingError:
