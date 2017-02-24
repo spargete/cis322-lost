@@ -1,0 +1,37 @@
+<html>
+	<head><title>LOST Asset Report</title></head>
+	<body>
+		<form action="{{url_for('asset_report')}}" method='POST'>
+			<dl>
+				<dt>Choose the facility or 'All' for all facilities:
+				<dd><select name='facility'>
+					<option value='All'>All</option>
+					{% for entry in session.facility_list %}
+					<option value='{{entry.facility_name}}'>{{entry.facility_name}}</option>
+					{% endfor %}
+				<dt>Enter the date:
+				<dd><input type='date' name='date' value='1970-01-01'>
+				<dd><input type='submit' value='Continue'>
+			</dl>
+		</form>	
+		<br>
+		<table border="1">
+			<tr>
+				<th>Asset Tag</th>
+				<th>Asset Description</th>
+				<th>Asset Location</th>
+				<th>Arrive Date</th>
+				<th>Depart Date</th>
+			</tr>
+			{% for entry in session.asset_report %}
+			<tr>
+				<td>{{entry.asset_tag}}</td>
+				<td>{{entry.description}}</td>
+				<td>{{entry.facility}}</td>
+				<td>{{entry.arrive_dt}}</td>
+				<td>{{entry.depart_dt}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</body>
+</html>

@@ -4,7 +4,7 @@
 		<form action="{{url_for('dispose_asset')}}" method='POST'>
 			<dl>
 				<dt>Enter the tag of the disposed asset:
-				<dd><input type='text' name='asset_tag'>
+				<dd><input type='text' name='asset_tag' maxlength=16>
 				<dt>Enter the date on which the asset was disposed:
 				<dd><input type='date' name='disposal_date' value='1970-01-01'>
 				<dd><input type='submit' value='Dispose'>

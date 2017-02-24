@@ -108,7 +108,8 @@ def add_facility():
 			conn.close()
 			return render_template('facility_exists.html')
 
-
+	cur.close()
+	conn.close()
 	return render_template('add_facility.html')
 
 @app.route('/add_asset', methods = ['GET', 'POST'])
@@ -136,7 +137,7 @@ def add_asset():
 		row['facility_fcode'] = r[5]
 		asset_report.append(row)
 
-	session['asset_report'] = asset_report
+	session['asset_list'] = asset_report
 
 	cur.execute('SELECT facility_common_name FROM facilities;')
 	try:
@@ -178,6 +179,8 @@ def add_asset():
 			conn.close()
 			return render_template('asset_exists.html')
 
+	cur.close()
+	conn.close()
 	return render_template('add_asset.html')
 
 @app.route('/dispose_asset', methods = ['GET', 'POST'])
@@ -207,10 +210,60 @@ def dispose_asset():
 			return render_template('asset_already_disposed.html')
 		else:
 			cur.execute('UPDATE assets SET disposed_dt=%s WHERE asset_tag=%s;', (date, tag))
-			cur.execute('UPDATE asset_at SET depart_dt=%s WHERE arrive_dt=(SELECT MAX(arrive_dt) FROM asset_at WHERE asset_fk=(SELECT asset_pk FROM assets WHERE asset_tag=%s)) AND asset_fk=(SELECT asset_pk FROM assets WHERE asset_tag=%s);', (date, tag, tag))
+			cur.execute('UPDATE asset_at SET depart_dt=%s WHERE depart_dt IS NULL FROM asset_at WHERE asset_fk=(SELECT asset_pk FROM assets WHERE asset_tag=%s)) \
+				AND asset_fk=(SELECT asset_pk FROM assets WHERE asset_tag=%s);', (date, tag, tag))
 			conn.commit()
 			cur.close()
 			conn.close()
 			return redirect(url_for('dashboard'))
 
 	return render_template('dispose_asset.html')
+
+@app.route('/asset_report', methods = ['GET', 'POST'])
+def asset_report():
+	session['asset_report'] = []
+	if request.method == 'POST':
+		facility = request.form['facility']
+		date = request.form['date']
+		conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
+		cur = conn.cursor()
+		if facility == 'All':
+			cur.execute('SELECT a.asset_tag, a.description, f.facility_common_name, aa.arrive_dt, aa.depart_dt FROM assets AS a INNER JOIN asset_at AS aa ON a.asset_pk=aa.asset_fk \
+			INNER JOIN facilities AS f ON f.facility_pk=aa.facility_fk WHERE aa.arrive_dt<=%s AND (aa.depart_dt>=%s OR aa.depart_dt IS NULL);', (date, date))
+		else:
+			cur.execute('SELECT a.asset_tag, a.description, f.facility_common_name, aa.arrive_dt, aa.depart_dt FROM assets AS a INNER JOIN asset_at AS aa ON a.asset_pk=aa.asset_fk \
+			INNER JOIN facilities AS f ON f.facility_pk=aa.facility_fk WHERE aa.arrive_dt<=%s AND (aa.depart_dt>=%s OR aa.depart_dt IS NULL) AND f.facility_common_name=%s;', (date, date, facility))
+
+		try:
+			result = cur.fetchall()
+		except ProgrammingError:
+			result = None
+
+		asset_report = []	
+
+		for r in result:
+			row = dict()
+			row['asset_tag'] = r[0]
+			row['description'] = r[1]
+			row['facility'] = r[2]
+			row['arrive_dt'] = r[3]
+			row['depart_dt'] = r[4]
+			asset_report.append(row)
+
+		session['asset_report'] = asset_report
+
+		cur.execute('SELECT facility_common_name FROM facilities;')
+		try:
+			result = cur.fetchall()
+		except ProgrammingError:
+			result = None
+
+		facility_list = []
+		for r in result:
+			row = dict()
+			row['facility_name'] = r[0]
+			facility_list.append(row)
+
+		session['facility_list'] = facility_list
+
+	return render_template('asset_report.html')

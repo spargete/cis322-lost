@@ -10,7 +10,7 @@
 				<th>Arrive Date</th>
 				<th>Depart Date</th>
 			</tr>
-			{% for entry in session.asset_report %}
+			{% for entry in session.asset_list %}
 			<tr>
 				<td>{{entry.asset_tag}}</td>
 				<td>{{entry.description}}</td>
@@ -18,10 +18,10 @@
 				<td>{{entry.facility_fcode}}</td>
 				<td>{{entry.arrive_dt}}</td>
 				<td>{{entry.depart_dt}}</td>
-			<tr>
+			</tr>
 			{% endfor %}
 		</table>
-
+		<br>
 		<form action="{{url_for('add_asset')}}" method='POST'>
 			<dl>
 				<dt>Enter the asset tag (max 16 characters):
