@@ -7,4 +7,5 @@ fi
 
 cd sql
 psql $1 -f create_tables.sql
+cd ..
 cp -r ./src/wsgi ~
