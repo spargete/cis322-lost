@@ -4,6 +4,7 @@
 		<h2>Your username is {{session.username}}.</h2>
 		Click <a href="{{url_for('add_facility')}}">here</a> to add a facility to LOST. <br>
 		Click <a href="{{url_for('add_asset')}}">here</a> to add an asset to LOST. <br>
+		Click <a href="{{url_for('asset_report')}}">here</a> to see a list of assets LOST controls at a specific time. <br>
 		{% if session.role == 'Logistics Officer' %}
 		Click <a href="{{url_for('dispose_asset')}}">here</a> to dispose of an asset. <br>
 		{% endif %}
