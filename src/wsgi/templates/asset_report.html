@@ -9,12 +9,15 @@
 					{% for entry in session.facility_list %}
 					<option value='{{entry.facility_name}}'>{{entry.facility_name}}</option>
 					{% endfor %}
+				</select>
 				<dt>Enter the date:
 				<dd><input type='date' name='date' value='1970-01-01'>
 				<dd><input type='submit' value='Continue'>
 			</dl>
 		</form>	
 		<br>
+		<a href="{{url_for('dashboard')}}">Back to dashboard</a>
+		{% if session.asset_report != []}
 		<table border="1">
 			<tr>
 				<th>Asset Tag</th>
@@ -33,5 +36,6 @@
 			</tr>
 			{% endfor %}
 		</table>
+		{% endif %}
 	</body>
 </html>
