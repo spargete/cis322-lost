@@ -72,6 +72,7 @@ def dashboard():
 	if not session['logged_in']:
 		return redirect(url_for('login'))
 	else:
+		#Add SQL query to grab correct details for the form for Step 3
 		return render_template('dashboard.html')
 
 
