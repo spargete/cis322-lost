@@ -41,3 +41,21 @@ CREATE TABLE asset_at (
 	depart_dt				timestamp DEFAULT NULL
 ); /* I am using an asset_at table for history purposes. This could get very large if there is a lot of movement of assets going on,
 but I think that is an acceptable issue for this point in the project. */
+
+CREATE TABLE transfer_requests (
+	request_pk				serial primary key,
+	requester_fk			integer REFERENCES users (user_pk),
+	request_dt				timestamp,
+	source_fk				integer REFERENCES facilities (facility_pk),
+	dest_fk					integer REFERENCES facilities (facility_pk),
+	asset_fk				integer REFERENCES assets (asset_fk),
+	approver_fk				integer REFERENCES users (user_pk),
+	approval_dt				timestamp
+);  /* Minimal implementation here, apart from the request_pk unique identifier */
+
+CREATE TABLE transfers (
+	asset_fk				integer REFERENCES assets (asset_fk),
+	request_fk				integer REFERENCES transfer_requests (request_pk),
+	load_dt					timestamp,
+	unload_dt				timestamp
+); /* Here I decided to relate the transfers table to the requests table so the source_fk and dest_fk are there instead of here. */

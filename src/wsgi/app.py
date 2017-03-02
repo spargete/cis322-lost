@@ -6,6 +6,11 @@ app = Flask(__name__)
 
 app.config["SECRET_KEY"] = secret_key
 
+@app.route('/logout')
+def logout():
+	session['logged_in'] = False
+	return redirect(url_for('login'))
+
 @app.route('/create_user', methods = ['GET', 'POST'])
 def create_user():
 	if request.method == 'POST':
@@ -64,11 +69,18 @@ def login():
 
 @app.route('/dashboard', methods = ['GET',])
 def dashboard():
-	return render_template('dashboard.html')
+	if not session['logged_in']:
+		return redirect(url_for('login'))
+	else:
+		#Add SQL query to grab correct details for the form for Step 3
+		return render_template('dashboard.html')
 
 
 @app.route('/add_facility', methods = ['GET', 'POST'])
 def add_facility():
+	if not session['logged_in']:
+		return redirect(url_for('login'))
+
 	conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
 	cur = conn.cursor()
 	cur.execute('SELECT facility_common_name, facility_fcode FROM facilities;')
@@ -114,6 +126,9 @@ def add_facility():
 
 @app.route('/add_asset', methods = ['GET', 'POST'])
 def add_asset():
+	if not session['logged_in']:
+		return redirect(url_for('login'))
+
 	conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
 	cur = conn.cursor()
 	cur.execute('SELECT a.asset_tag, a.description, aa.arrive_dt, aa.depart_dt, \
@@ -185,6 +200,9 @@ def add_asset():
 
 @app.route('/dispose_asset', methods = ['GET', 'POST'])
 def dispose_asset():
+	if not session['logged_in']:
+		return redirect(url_for('login'))
+
 	if session['role'] != 'Logistics Officer':
 		return render_template('disposal_locked.html')
 	if request.method == 'POST':
@@ -221,6 +239,9 @@ def dispose_asset():
 
 @app.route('/asset_report', methods = ['GET', 'POST'])
 def asset_report():
+	if not session['logged_in']:
+		return redirect(url_for('login'))
+	
 	session['asset_report'] = []
 	if request.method == 'POST':
 		facility = request.form['facility']
