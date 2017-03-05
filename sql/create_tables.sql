@@ -48,13 +48,13 @@ CREATE TABLE transfer_requests (
 	request_dt				timestamp,
 	source_fk				integer REFERENCES facilities (facility_pk),
 	dest_fk					integer REFERENCES facilities (facility_pk),
-	asset_fk				integer REFERENCES assets (asset_fk),
+	asset_fk				integer REFERENCES assets (asset_pk),
 	approver_fk				integer REFERENCES users (user_pk),
 	approval_dt				timestamp
 );  /* Minimal implementation here, apart from the request_pk unique identifier */
 
 CREATE TABLE transfers (
-	asset_fk				integer REFERENCES assets (asset_fk),
+	asset_fk				integer REFERENCES assets (asset_pk),
 	request_fk				integer REFERENCES transfer_requests (request_pk),
 	load_dt					timestamp,
 	unload_dt				timestamp

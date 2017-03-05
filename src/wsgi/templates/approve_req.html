@@ -1,0 +1,32 @@
+<html>
+	<head><title>LOST Approve Request Screen</title></head>
+	<body>
+		<table border="1">
+			<tr>
+				<th>Asset Tag</th>
+				<th>Source Facility</th>
+				<th>Destination Facility</th>
+				<th>Requester</th>
+				<th>Request Time</th>
+			</tr>
+			{% for entry in session.request_report %}
+			<tr>
+				<td>{{entry.tag}}</td>
+				<td>{{entry.source}}</td>
+				<td>{{entry.dest}}</td>
+				<td>{{entry.requester}}</td>
+				<td>{{entry.request_dt}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+		<br>
+		<form action="{{url_for('approve_req')}}" method=POST>
+			<dl>
+				<dd><input type='radio' name='approval' value='True'> Approved</dd>
+				<dd><input type='radio' name='approval' value='False'> Rejected</dd>
+				<dd><input type='hidden' name='request_id' value="{{request.args.get('req_id')}}"></dd>
+				<dd><input type='submit' value='Continue'></dd>
+			</dl>
+		</form>
+	</body>
+</html>

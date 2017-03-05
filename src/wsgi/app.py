@@ -74,6 +74,8 @@ def dashboard():
 		return redirect(url_for('login'))
 	else:
 		#Add SQL query to grab correct details for the form for Step 3
+		if session['role'] == 'Logistics Officer':
+
 		return render_template('dashboard.html')
 
 
@@ -412,3 +414,70 @@ def transfer_req():
 		conn.close()
 
 		return render_template('transfer_request.html')
+
+@app.route('/approve_req', methods = ['GET', 'POST'])
+def approve_req():
+	if not session['logged_in']:
+		return redirect(url_for('login'))
+
+	if session['role'] != 'Facilities Officer':
+		return render_template('approve_req_locked.html')
+
+	conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
+	cur = conn.cursor()
+
+	if request.method == 'GET' and 'req_id' in request.args:
+		req_id = int(request.args['req_id'])
+		cur.execute('SELECT a.asset_tag, f.facility_common_name, u.username, r.request_dt FROM transfer_requests AS r INNER JOIN \
+			facilities AS f ON r.source_fk=f.facility_pk INNER JOIN users AS u ON r.requester_fk=u.user_pk INNER JOIN assets AS a ON \
+			r.asset_fk=a.asset_pk WHERE r.request_pk=%s;', (req_id,))
+
+		try:
+			result = cur.fetchone()
+		except ProgrammingError:
+			result = None
+
+		cur.execute('SELECT f.facility_common_name FROM transfer_requests AS r INNER JOIN \
+			facilities AS f ON r.dest_fk=f.facility_pk WHERE r.request_pk=%s;', (req_id,))
+
+		try:
+			result_dest = cur.fetchone()
+		except ProgrammingError:
+			result_dest = None
+
+		if result == None || result_dest == None:
+			return render_template('generic_error.html')
+		else:
+			session['request_report'] = []
+			row = dict()
+			row['tag'] = result[0]
+			row['source'] = result[1]
+			row['dest'] = result_dest[0]
+			row['requester'] = result[2]
+			row['request_dt'] = result[3]
+			session['request_report'].append(row)
+
+		conn.commit()
+		cur.close()
+		conn.close()
+		return render_template('approve_req.html')
+
+	elif request.method == 'POST':
+		req_id = request.form['req_id']
+		approval = request.form['approval']
+		if approval == 'False':
+			cur.execute('DELETE FROM transfer_requests WHERE request_pk=%s;', (req_id,))
+			conn.commit()
+			cur.close()
+			conn.close()
+			return redirect(url_for('dashboard'))
+
+		else:
+			user = session['username']
+			approval_dt = str(datetime.now())
+			cur.execute('UPDATE transfer_requests SET approval_dt=%s, approver_fk=(SELECT user_pk FROM users WHERE username=%s) WHERE request_pk=%s;', (approval_dt, user, req_id))
+			cur.execute('INSERT INTO transfers (asset_fk, request_fk) VALUES ((SELECT asset_fk FROM transfer_requests WHERE request_pk=%s), %s);', (req_id, req_id))
+			conn.commit()
+			cur.close()
+			conn.close()
+			return redirect(url_for('dashboard'))
