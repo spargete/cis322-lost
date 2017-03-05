@@ -501,7 +501,7 @@ def approve_req():
 		except ProgrammingError:
 			result_dest = None
 
-		if result == None || result_dest == None:
+		if result == None or result_dest == None:
 			conn.commit()
 			cur.close()
 			conn.close()
@@ -562,7 +562,7 @@ def update_transit():
 		except ProgrammingError:
 			result = None
 
-		if result == None || result[1] != None:
+		if result == None or result[1] != None:
 			conn.commit()
 			cur.close()
 			conn.close()
@@ -594,7 +594,7 @@ def update_transit():
 				conn.close()
 				return render_template('generic_error.html')
 
-			if result[0] == None || date < result[0]:
+			if result[0] == None or date < result[0]:
 				cur.close()
 				conn.close()
 				return render_template('load_date_incorrect.html')
