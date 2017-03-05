@@ -541,6 +541,8 @@ def approve_req():
 			conn.close()
 			return redirect(url_for('dashboard'))
 
+	return render_template('generic_error.html')
+
 @app.route('/update_transit', methods=['GET', 'POST'])
 def update_transit():
 	if not session['logged_in']:
@@ -578,9 +580,40 @@ def update_transit():
 		which = request.form['which']
 		transfer_id = request.form['transfer_id']
 		if which == 'load':
+			#Check to see if asset is being moved after it arrives
+			cur.execute('SELECT arrive_dt FROM asset_at WHERE depart_dt IS NULL AND asset_fk=(SELECT asset_fk FROM transfers WHERE request_fk=%s);', (transfer_id,))
+			try:
+				result = cur.fetchone()
+			except ProgrammingError:
+				conn.commit()
+				cur.close()
+				conn.close()
+				return render_template('generic_error.html')
+
+			if result[0] > date:
+				conn.commit()
+				cur.close()
+				conn.close()
+				return render_template('generic_error.html')
+
+			#Check to see if a load_dt has already been set
+			cur.execute('SELECT load_dt FROM transfers WHERE request_fk=%s;', (transfer_id,))
+			try:
+				result = cur.fetchone()
+			except ProgrammingError:
+				conn.commit()
+				cur.close()
+				conn.close()
+				return render_template('transfer_invalid.html')
+
+			if result[0] != None:
+				conn.commit()
+				cur.close()
+				conn.close()
+				return render_template('load_date_set.html')
+
 			cur.execute('UPDATE transfers SET load_dt=%s WHERE request_fk=%s;', (date, transfer_id))
-			cur.execute('UPDATE asset_at SET depart_dt=%s WHERE (depart_dt=MAX(SELECT depart_dt FROM asset_at WHERE asset_fk=(SELECT asset_fk FROM transfers WHERE request_fk=%s))\
-				OR depart_dt IS NULL) AND asset_fk=(SELECT asset_fk FROM transfers WHERE request_fk=%s);', (date, transfer_id, transfer_id))
+			cur.execute('UPDATE asset_at SET depart_dt=%s WHERE depart_dt IS NULL AND asset_fk=(SELECT asset_fk FROM transfers WHERE request_fk=%s);', (date, transfer_id, transfer_id))
 			conn.commit()
 			cur.close()
 			conn.close()
@@ -606,3 +639,6 @@ def update_transit():
 				cur.close()
 				conn.close()
 				return redirect(url_for('dashboard'))
+
+	return render_template('generic_error.html')
+	
