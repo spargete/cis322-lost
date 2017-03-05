@@ -73,9 +73,47 @@ def dashboard():
 	if not session['logged_in']:
 		return redirect(url_for('login'))
 	else:
-		#Add SQL query to grab correct details for the form for Step 3
+		conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
+		cur = conn.cursor()		
 		if session['role'] == 'Logistics Officer':
+			cur.execute('SELECT request_fk, load_dt, unload_dt FROM transfers;')
+			try:
+				request = cur.fetchall()
+			except ProgrammingError:
+				request = None
 
+
+			todo = []
+			for r in request:
+				row = dict()
+				row['req_id'] = r[0]
+				row['load_dt'] = r[1]
+				row['unload_dt'] = r[2]
+				todo.append(row)
+
+			session['todo'] = todo
+
+		elif session['role'] == 'Facilities Officer':
+			cur.execute('SELECT tr.request_pk, u.username, tr.request_dt FROM transfer_requests AS tr INNER JOIN \
+				users AS u ON tr.requester_fk=u.user_pk;')
+			try:
+				request = cur.fetchall()
+			except ProgrammingError:
+				request = None
+
+			todo = []
+			for r in request:
+				row = dict()
+				row['req_id'] = r[0]
+				row['requester'] = r[1]
+				row['req_time'] = r[2]
+				todo.append(row)
+
+			session['todo'] = todo
+
+		conn.commit()
+		cur.close()
+		conn.close()	
 		return render_template('dashboard.html')
 
 
@@ -319,6 +357,9 @@ def transfer_req():
 		if result != None:
 			asset_fk = result[0]
 		else:
+			conn.commit()
+			cur.close()
+			conn.close()
 			return render_template('asset_tag_missing.html')
 
 		cur.execute('SELECT facility_pk FROM facilities WHERE facility_fcode=%s;', (source,))
@@ -331,6 +372,9 @@ def transfer_req():
 		if result != None:
 			source_fk = result[0]
 		else:
+			conn.commit()
+			cur.close()
+			conn.close()
 			return render_template('source_facility_missing.html')
 
 		cur.execute('SELECT facility_pk FROM facilities WHERE facility_fcode=%s;', (dest,))
@@ -343,6 +387,9 @@ def transfer_req():
 		if result != None:
 			dest_fk = result[0]
 		else:
+			conn.commit()
+			cur.close()
+			conn.close()
 			return render_template('dest_facility_missing.html')
 
 		cur.execute('SELECT user_pk FROM users WHERE username=%s;', (session['username'],))
@@ -355,6 +402,9 @@ def transfer_req():
 		if result != None:
 			requester_fk = result[0]
 		else:
+			conn.commit()
+			cur.close()
+			conn.close()
 			return render_template('generic_error.html')
 
 		cur.execute('SELECT f.facility_fcode FROM assets AS a INNER JOIN asset_at AS aa ON a.asset_pk=aa.asset_fk INNER JOIN \
@@ -367,8 +417,14 @@ def transfer_req():
 
 		if result != None:
 			if source_fcode != result[0]:
+				conn.commit()
+				cur.close()
+				conn.close()
 				return render_template('asset_not_at_source.html')
 			elif dest_fcode == result[0]:
+				conn.commit()
+				cur.close()
+				conn.close()
 				return render_template('asset_already_at_dest.html')
 		else:
 			return render_template('generic_error.html')
@@ -446,6 +502,9 @@ def approve_req():
 			result_dest = None
 
 		if result == None || result_dest == None:
+			conn.commit()
+			cur.close()
+			conn.close()
 			return render_template('generic_error.html')
 		else:
 			session['request_report'] = []
@@ -463,7 +522,7 @@ def approve_req():
 		return render_template('approve_req.html')
 
 	elif request.method == 'POST':
-		req_id = request.form['req_id']
+		req_id = int(request.form['req_id'])
 		approval = request.form['approval']
 		if approval == 'False':
 			cur.execute('DELETE FROM transfer_requests WHERE request_pk=%s;', (req_id,))
@@ -481,3 +540,69 @@ def approve_req():
 			cur.close()
 			conn.close()
 			return redirect(url_for('dashboard'))
+
+@app.route('/update_transit', methods=['GET', 'POST'])
+def update_transit():
+	if not session['logged_in']:
+		return redirect(url_for('login'))
+
+	if session['role'] != 'Logistics Officer':
+		return render_template('update_transit_locked.html')
+
+	conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
+	cur = conn.cursor()
+
+	if request.method='GET' and 'transfer_id' in request.args:
+		transfer_id = int(request.args['transfer_id'])
+		cur.execute('SELECT t.load_dt, t.unload_dt, tr.source_fk, tr.dest_fk, FROM transfers AS t INNER JOIN transfer_requests AS tr ON t.request_fk=tr.request_pk \
+			WHERE t.request_fk=%s;', (transfer_id,))
+
+		try:
+			result = cur.fetchone()
+		except ProgrammingError:
+			result = None
+
+		if result == None || result[1] != None:
+			conn.commit()
+			cur.close()
+			conn.close()
+			return render_template('transfer_invalid.html')
+
+		conn.commit()
+		cur.close()
+		conn.close()
+		return render_template('update_transit.html')
+
+	elif request.method='POST':
+		date = request.form['date']
+		which = request.form['which']
+		transfer_id = request.form['transfer_id']
+		if which == 'load':
+			cur.execute('UPDATE transfers SET load_dt=%s WHERE request_fk=%s;', (date, transfer_id))
+			cur.execute('UPDATE asset_at SET depart_dt=%s WHERE (depart_dt=MAX(SELECT depart_dt FROM asset_at WHERE asset_fk=(SELECT asset_fk FROM transfers WHERE request_fk=%s))\
+				OR depart_dt IS NULL) AND asset_fk=(SELECT asset_fk FROM transfers WHERE request_fk=%s);', (date, transfer_id, transfer_id))
+			conn.commit()
+			cur.close()
+			conn.close()
+			return redirect(url_for('dashboard'))
+		elif which == 'unload':
+			cur.execute('SELECT load_dt FROM transfers WHERE request_fk=%s;', (transfer_id))
+			try:
+				result = cur.fetchone()
+			except ProgrammingError:
+				cur.close()
+				conn.close()
+				return render_template('generic_error.html')
+
+			if result[0] == None || date < result[0]:
+				cur.close()
+				conn.close()
+				return render_template('load_date_incorrect.html')
+			else:
+				cur.execute('UPDATE transfers SET unload_dt=%s WHERE request_fk=%s;' (date, transfer_id))
+				cur.execute('INSERT INTO asset_at (asset_fk, facility_fk, arrive_dt) VALUES \
+					((SELECT asset_fk FROM transfers WHERE request_fk=%s), (SELECT dest_fk FROM transfer_requests WHERE request_pk=%s), %s);' (transfer_id, transfer_id, date))
+				conn.commit()
+				cur.close()
+				conn.close()
+				return redirect(url_for('dashboard'))

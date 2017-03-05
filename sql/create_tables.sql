@@ -38,7 +38,7 @@ CREATE TABLE asset_at (
 	asset_fk				integer REFERENCES assets (asset_pk),
 	facility_fk				integer REFERENCES facilities (facility_pk),
 	arrive_dt				timestamp,
-	depart_dt				timestamp DEFAULT NULL
+	depart_dt				timestamp
 ); /* I am using an asset_at table for history purposes. This could get very large if there is a lot of movement of assets going on,
 but I think that is an acceptable issue for this point in the project. */
 

@@ -5,11 +5,9 @@
 		Click <a href="{{url_for('add_facility')}}">here</a> to add a facility to LOST. <br>
 		Click <a href="{{url_for('add_asset')}}">here</a> to add an asset to LOST. <br>
 		Click <a href="{{url_for('asset_report')}}">here</a> to see a list of assets LOST controls at a specific time. <br>
-		<!--Click <a href="{{url_for('transfer_report')}}">here</a> to see a list of assets in transit at a specific time. <br> -->
 		{% if session.role == 'Logistics Officer' %}
 		Click <a href="{{url_for('dispose_asset')}}">here</a> to dispose of an asset. <br>
 		Click <a href="{{url_for('transfer_req')}}">here</a> to initiate a transfer request. <br>
-	<!-- Commenting for error-avoidance
 		<table border = "1">
 			<tr>
 				<th>Transit Request ID</th>
@@ -18,7 +16,7 @@
 			</tr>
 			{% for entry in session.todo %}
 			<tr>
-				<td><a href="{{url_for('update_tracking')}}?req_id={{entry.req_id}}">{{entry.req_id}}</a></td>
+				<td><a href="{{url_for('update_transit')}}?req_id={{entry.req_id}}">{{entry.req_id}}</a></td>
 				<td>{% if entry.load_dt != None %}
 					{{entry.load_dt}}
 					{% else %}
@@ -34,13 +32,9 @@
 			</tr>
 			{% endfor %}
 		</table>
-	-->
 
 		{% endif %}
-
-		<!-- TODO: Add "todo" table -->
 		{% if session.role == 'Facilities Officer' %}
-	<!-- Commenting for error-avoidance
 		<table border = "1">
 			<tr>
 				<th>Transit Request ID</th>
@@ -55,7 +49,6 @@
 			</tr>
 			{% endfor %}
 		</table>
-	-->
 		{% endif %}
 
 		<br>
