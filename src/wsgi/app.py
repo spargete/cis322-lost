@@ -627,7 +627,7 @@ def update_transit():
 				conn.close()
 				return render_template('generic_error.html')
 
-			if result[0] == None or date < result[0]:
+			if result[0] == None or datetime.strptime(date, '%Y-%m-%d') < result[0]:
 				cur.close()
 				conn.close()
 				return render_template('load_date_incorrect.html')
