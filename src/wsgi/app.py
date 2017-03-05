@@ -552,7 +552,7 @@ def update_transit():
 	conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
 	cur = conn.cursor()
 
-	if request.method='GET' and 'transfer_id' in request.args:
+	if request.method == 'GET' and 'transfer_id' in request.args:
 		transfer_id = int(request.args['transfer_id'])
 		cur.execute('SELECT t.load_dt, t.unload_dt, tr.source_fk, tr.dest_fk, FROM transfers AS t INNER JOIN transfer_requests AS tr ON t.request_fk=tr.request_pk \
 			WHERE t.request_fk=%s;', (transfer_id,))
@@ -573,7 +573,7 @@ def update_transit():
 		conn.close()
 		return render_template('update_transit.html')
 
-	elif request.method='POST':
+	elif request.method == 'POST':
 		date = request.form['date']
 		which = request.form['which']
 		transfer_id = request.form['transfer_id']
