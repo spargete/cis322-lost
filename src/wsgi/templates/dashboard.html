@@ -18,15 +18,15 @@
 			</tr>
 			{% for entry in session.todo %}
 			<tr>
-				<td><a href="{{url_for('update_tracking')}}?req_id={{entry['req_id']}}">{{entry['req_id']}}</a></td>
-				<td>{% if entry['load_dt'] != None %}
-					{{entry['load_dt']}}
+				<td><a href="{{url_for('update_tracking')}}?req_id={{entry.req_id}}">{{entry.req_id}}</a></td>
+				<td>{% if entry.load_dt != None %}
+					{{entry.load_dt}}
 					{% else %}
 					TODO: Load time not set
 					{% endif %}
 				</td>
-				<td>{% if entry['unload_dt'] != None %}
-					{{entry['unload_dt']}}
+				<td>{% if entry.unload_dt != None %}
+					{{entry.unload_dt}}
 					{% else %}
 					TODO: Unload time not set
 					{% endif %}
@@ -49,13 +49,16 @@
 			</tr>
 			{% for entry in session.todo %}
 			<tr>
-				<td><a href="{{url_for('approve_req')}}?req_id={{entry['req_id']}}">{{entry['req_id']}}</a></td>
-				<td>{{entry['req_time']}}</td>
-				<td>{{entry['requester']}}</td>
+				<td><a href="{{url_for('approve_req')}}?req_id={{entry.req_id}}">{{entry.req_id}}</a></td>
+				<td>{{entry.req_time}}</td>
+				<td>{{entry.requester}}</td>
 			</tr>
 			{% endfor %}
 		</table>
 	-->
 		{% endif %}
+
+		<br>
+		Click <a href="{{url_for('logout')}}">here</a> to logout.
 	</body>
 </html>

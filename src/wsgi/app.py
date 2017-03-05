@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 import psycopg2
 from config import dbname, dbhost, dbport, secret_key
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -288,3 +289,126 @@ def asset_report():
 		session['facility_list'] = facility_list
 
 	return render_template('asset_report.html')
+
+@app.route('/transfer_req', methods = ['GET', 'POST'])
+def transfer_req():
+	if not session['logged_in']:
+		return redirect(url_for('login'))
+
+	if session['role'] != 'Logistics Officer':
+		return render_template('transfer_req_locked.html')
+
+	conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
+	cur = conn.cursor()
+
+	if request.method == 'POST':
+		tag = request.form['asset_tag']
+		source = request.form['source_fcode']
+		dest = request.form['dest_fcode']
+		request_dt = str(datetime.now())
+
+		cur.execute('SELECT asset_pk FROM assets WHERE asset_tag=%s;', (tag,))
+
+		try:
+			result = cur.fetchone()
+		except ProgrammingError:
+			result = None
+
+		if result != None:
+			asset_fk = result[0]
+		else:
+			return render_template('asset_tag_missing.html')
+
+		cur.execute('SELECT facility_pk FROM facilities WHERE facility_fcode=%s;', (source,))
+
+		try:
+			result = cur.fetchone()
+		except ProgrammingError:
+			result = None
+
+		if result != None:
+			source_fk = result[0]
+		else:
+			return render_template('source_facility_missing.html')
+
+		cur.execute('SELECT facility_pk FROM facilities WHERE facility_fcode=%s;', (dest,))
+
+		try:
+			result = cur.fetchone()
+		except ProgrammingError:
+			result = None
+
+		if result != None:
+			dest_fk = result[0]
+		else:
+			return render_template('dest_facility_missing.html')
+
+		cur.execute('SELECT user_pk FROM users WHERE username=%s;', (session['username'],))
+
+		try:
+			result = cur.fetchone()
+		except ProgrammingError:
+			result = None
+
+		if result != None:
+			requester_fk = result[0]
+		else:
+			return render_template('generic_error.html')
+
+		cur.execute('SELECT f.facility_fcode FROM assets AS a INNER JOIN asset_at AS aa ON a.asset_pk=aa.asset_fk INNER JOIN \
+			facilities AS f ON f.facility_pk=aa.facility_fk WHERE aa.arrive_dt<=%s AND (aa.depart_dt>%s OR aa.depart_dt IS NULL) AND a.asset_tag=%s;', (request_dt, request_dt, tag))
+
+		try:
+			result = cur.fetchone()
+		except ProgrammingError:
+			result = None
+
+		if result != None:
+			if source_fcode != result[0]:
+				return render_template('asset_not_at_source.html')
+			elif dest_fcode == result[0]:
+				return render_template('asset_already_at_dest.html')
+		else:
+			return render_template('generic_error.html')
+
+		cur.execute('INSERT INTO transfer_requests (requester_fk, request_dt, source_fk, dest_fk, asset_fk) VALUES (%s, %s, %s, %s, %s);', (requester_fk, request_dt, source_fk, dest_fk, asset_fk))
+		conn.commit()
+		cur.close()
+		conn.close()
+		return render_template("request_successful.html")
+
+	else:
+		asset_list = []
+		facility_list = []
+
+		cur.execute('SELECT asset_tag FROM assets;')
+		try:
+			result = cur.fetchall()
+		except ProgrammingError:
+			result = None
+
+		for r in result:
+			row = dict()
+			row['tag'] = r[0]
+			asset_list.append(row)
+
+		session['asset_list'] = asset_list
+
+		cur.execute('SELECT facility_fcode FROM facilities;')
+		try:
+			result = cur.fetchall()
+		except ProgrammingError:
+			result = None
+
+		for r in result:
+			row = dict()
+			row['fcode'] = r[0]
+			facility_list.append(row)
+
+		session['facility_list'] = facility_list
+
+		conn.commit()
+		cur.close()
+		conn.close()
+
+		return render_template('transfer_request.html')
