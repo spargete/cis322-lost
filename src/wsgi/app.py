@@ -554,7 +554,7 @@ def update_transit():
 
 	if request.method == 'GET' and 'transfer_id' in request.args:
 		transfer_id = int(request.args['transfer_id'])
-		cur.execute('SELECT t.load_dt, t.unload_dt, tr.source_fk, tr.dest_fk, FROM transfers AS t INNER JOIN transfer_requests AS tr ON t.request_fk=tr.request_pk \
+		cur.execute('SELECT t.load_dt, t.unload_dt, tr.source_fk, tr.dest_fk FROM transfers AS t INNER JOIN transfer_requests AS tr ON t.request_fk=tr.request_pk \
 			WHERE t.request_fk=%s;', (transfer_id,))
 
 		try:
