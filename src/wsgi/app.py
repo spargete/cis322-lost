@@ -590,7 +590,7 @@ def update_transit():
 				conn.close()
 				return render_template('generic_error.html')
 
-			if result[0] > date:
+			if result[0] > datetime.strptime(date, '%Y-%m-%d'):
 				conn.commit()
 				cur.close()
 				conn.close()
@@ -641,4 +641,3 @@ def update_transit():
 				return redirect(url_for('dashboard'))
 
 	return render_template('generic_error.html')
-	
