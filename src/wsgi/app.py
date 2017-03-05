@@ -632,9 +632,9 @@ def update_transit():
 				conn.close()
 				return render_template('load_date_incorrect.html')
 			else:
-				cur.execute('UPDATE transfers SET unload_dt=%s WHERE request_fk=%s;' (date, transfer_id))
+				cur.execute('UPDATE transfers SET unload_dt=%s WHERE request_fk=%s;', (date, transfer_id))
 				cur.execute('INSERT INTO asset_at (asset_fk, facility_fk, arrive_dt) VALUES \
-					((SELECT asset_fk FROM transfers WHERE request_fk=%s), (SELECT dest_fk FROM transfer_requests WHERE request_pk=%s), %s);' (transfer_id, transfer_id, date))
+					((SELECT asset_fk FROM transfers WHERE request_fk=%s), (SELECT dest_fk FROM transfer_requests WHERE request_pk=%s), %s);', (transfer_id, transfer_id, date))
 				conn.commit()
 				cur.close()
 				conn.close()
