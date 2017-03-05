@@ -16,7 +16,7 @@
 			</tr>
 			{% for entry in session.todo %}
 			<tr>
-				<td><a href="{{url_for('update_transit')}}?req_id={{entry.req_id}}">{{entry.req_id}}</a></td>
+				<td><a href="{{url_for('update_transit')}}?transfer_id={{entry.req_id}}">{{entry.req_id}}</a></td>
 				<td>{% if entry.load_dt != None %}
 					{{entry.load_dt}}
 					{% else %}
@@ -43,7 +43,7 @@
 			</tr>
 			{% for entry in session.todo %}
 			<tr>
-				<td><a href="{{url_for('approve_req')}}?transfer_id={{entry.req_id}}">{{entry.req_id}}</a></td>
+				<td><a href="{{url_for('approve_req')}}?req_id={{entry.req_id}}">{{entry.req_id}}</a></td>
 				<td>{{entry.req_time}}</td>
 				<td>{{entry.requester}}</td>
 			</tr>
