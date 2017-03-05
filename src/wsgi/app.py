@@ -613,7 +613,7 @@ def update_transit():
 				return render_template('load_date_set.html')
 
 			cur.execute('UPDATE transfers SET load_dt=%s WHERE request_fk=%s;', (date, transfer_id))
-			cur.execute('UPDATE asset_at SET depart_dt=%s WHERE depart_dt IS NULL AND asset_fk=(SELECT asset_fk FROM transfers WHERE request_fk=%s);', (date, transfer_id, transfer_id))
+			cur.execute('UPDATE asset_at SET depart_dt=%s WHERE depart_dt IS NULL AND asset_fk=(SELECT asset_fk FROM transfers WHERE request_fk=%s);', (date, transfer_id))
 			conn.commit()
 			cur.close()
 			conn.close()
