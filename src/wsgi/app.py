@@ -76,7 +76,7 @@ def dashboard():
 		conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
 		cur = conn.cursor()		
 		if session['role'] == 'Logistics Officer':
-			cur.execute('SELECT request_fk, load_dt, unload_dt FROM transfers;')
+			cur.execute('SELECT request_fk, load_dt, unload_dt FROM transfers WHERE load_dt IS NULL OR unload_dt IS NULL;')
 			try:
 				request = cur.fetchall()
 			except ProgrammingError:
@@ -95,7 +95,7 @@ def dashboard():
 
 		elif session['role'] == 'Facilities Officer':
 			cur.execute('SELECT tr.request_pk, u.username, tr.request_dt FROM transfer_requests AS tr INNER JOIN \
-				users AS u ON tr.requester_fk=u.user_pk;')
+				users AS u ON tr.requester_fk=u.user_pk WHERE approval_dt IS NULL;')
 			try:
 				request = cur.fetchall()
 			except ProgrammingError:
