@@ -416,12 +416,12 @@ def transfer_req():
 			result = None
 
 		if result != None:
-			if source_fcode != result[0]:
+			if source != result[0]:
 				conn.commit()
 				cur.close()
 				conn.close()
 				return render_template('asset_not_at_source.html')
-			elif dest_fcode == result[0]:
+			elif dest == result[0]:
 				conn.commit()
 				cur.close()
 				conn.close()
