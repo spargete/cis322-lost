@@ -640,3 +640,36 @@ def update_transit():
 				return redirect(url_for('dashboard'))
 
 	return render_template('generic_error.html')
+
+@app.route('/transfer_report', methods = ['GET', 'POST'])
+def transfer_report():
+	if not session['logged_in']:
+		return redirect(url_for('login'))
+
+	conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
+	cur = conn.cursor()
+
+	session['transfer_report'] = []
+
+	if request.method == "POST":
+		date = request.form['date']
+		cur.execute('SELECT a.asset_tag, t.load_dt, t.unload_dt FROM transfers AS t INNER JOIN assets AS a ON\
+			a.asset_pk=t.asset_fk WHERE t.load_dt<=%s AND (t.unload_dt>%s OR t.unload_dt IS NULL);', (date, date))
+
+		try:
+			result = cur.fetchall()
+		except ProgrammingError:
+			result = None
+
+		transfer_report = []
+
+		for r in result:
+			row=dict()
+			row['tag'] = r[0]
+			row['load_dt'] = r[1]
+			row['unload_dt'] = r[2]
+			transfer_report.append(row)
+
+		session['transfer_report'] = transfer_report
+
+	return render_template('transfer_report.html')

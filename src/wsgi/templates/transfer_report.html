@@ -1,0 +1,28 @@
+<html>
+	<head><title>LOST Transfer Report Screen</title></head>
+	<body>
+		<form action="{{url_for('transfer_report')}}" method=POST>
+			<dl>
+				<dt>Enter the date:</dt>
+				<dd><input type='date' name='date' value='1970-01-01'></dd>
+				<dd><input type='submit' value='Continue'></dd>
+			</dl>
+		</form>
+		<a href="{{url_for('dashboard')}}">Back to dashboard</a>
+		<br>
+		<table border="1">
+			<tr>
+				<th>Asset Tag</th>
+				<th>Load Time</th>
+				<th>Unload Time</th>
+			</tr>
+			{% for entry in session.transfer_report %}
+			<tr>
+				<td>{{entry.tag}}</td>
+				<td>{{entry.load_dt}}</td>
+				<td>{{entry.unload_dt}}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</body>
+</html>
