@@ -175,7 +175,7 @@ def add_asset():
 	cur.execute('SELECT a.asset_tag, a.description, aa.arrive_dt, aa.depart_dt, \
 		f.facility_common_name, f.facility_fcode FROM assets AS a INNER JOIN \
 		asset_at AS aa ON aa.asset_fk=a.asset_pk INNER JOIN facilities AS f \
-		ON f.facility_pk=aa.facility_fk ORDER BY aa.arrive_dt ASC;')
+		ON f.facility_pk=aa.facility_fk WHERE a.disposed_dt IS NULL ORDER BY aa.arrive_dt ASC;')
 
 	try:
 		result = cur.fetchall()
@@ -438,7 +438,7 @@ def transfer_req():
 		asset_list = []
 		facility_list = []
 
-		cur.execute('SELECT asset_tag FROM assets;')
+		cur.execute('SELECT asset_tag FROM assets WHERE disposed_dt IS NULL;')
 		try:
 			result = cur.fetchall()
 		except ProgrammingError:
