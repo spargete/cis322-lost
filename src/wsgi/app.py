@@ -223,7 +223,7 @@ def add_asset():
 			result = None
 
 		if result == None:
-			cur.execute('INSERT INTO assets (asset_tag, description) VALUES (%s, %s);', (asset_tag, description))
+			cur.execute('INSERT INTO assets (asset_tag, description, intake_dt) VALUES (%s, %s, %s);', (asset_tag, description, arrive_dt))
 			cur.execute('INSERT INTO asset_at (asset_fk, facility_fk, arrive_dt) VALUES ((SELECT asset_pk FROM assets WHERE asset_tag=%s), \
 				(SELECT facility_pk FROM facilities WHERE facility_common_name=%s), %s);', (asset_tag, name, arrive_dt))
 			conn.commit()
