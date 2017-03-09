@@ -95,7 +95,7 @@ def dashboard():
 
 		elif session['role'] == 'Facilities Officer':
 			cur.execute('SELECT tr.request_pk, u.username, tr.request_dt FROM transfer_requests AS tr INNER JOIN \
-				users AS u ON tr.requester_fk=u.user_pk WHERE approval_dt IS NULL;')
+				users AS u ON tr.requester_fk=u.user_pk WHERE tr.approval_dt IS NULL;')
 			try:
 				request = cur.fetchall()
 			except ProgrammingError:
