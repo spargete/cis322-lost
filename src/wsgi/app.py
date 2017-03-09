@@ -533,8 +533,8 @@ def approve_req():
 		else:
 			user = session['username']
 			approval_dt = str(datetime.now())
-			cur.execute('INSERT INTO transfers (asset_fk, request_fk, approver_fk, approval_dt)\
-				VALUES ((SELECT asset_fk FROM transfer_requests WHERE request_pk=%s), %s, (SELECT user_pk FROM users WHERE username=%s), %s);', (req_id, req_id, user, approval_dt))
+			cur.execute('UPDATE transfer_requests SET approval_dt=%s, approver_fk=(SELECT user_pk FROM users WHERE username=%s) WHERE request_pk=%s;', (approval_dt, user, req_id))
+			cur.execute('INSERT INTO transfers (asset_fk, request_fk) VALUES ((SELECT asset_fk FROM transfer_requests WHERE request_pk=%s), %s);', (req_id, req_id))
 			conn.commit()
 			cur.close()
 			conn.close()
