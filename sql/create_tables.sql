@@ -50,14 +50,14 @@ CREATE TABLE transfer_requests (
 	request_dt				timestamp,
 	source_fk				integer REFERENCES facilities (facility_pk),
 	dest_fk					integer REFERENCES facilities (facility_pk),
-	asset_fk				integer REFERENCES assets (asset_pk),
-	approver_fk				integer REFERENCES users (user_pk),
-	approval_dt				timestamp
-);  /* Minimal implementation here, apart from the request_pk unique identifier */
+	asset_fk				integer REFERENCES assets (asset_pk)
+);  /* Minimal implementation here, apart from the request_pk unique identifier. Approval information is stored in the transfers table. */
 
 CREATE TABLE transfers (
 	asset_fk				integer REFERENCES assets (asset_pk),
 	request_fk				integer REFERENCES transfer_requests (request_pk),
 	load_dt					timestamp,
-	unload_dt				timestamp
-); /* Here I decided to relate the transfers table to the requests table so the source_fk and dest_fk are there instead of here. */
+	unload_dt				timestamp,
+	approver_fk				integer REFERENCES users (user_pk),
+	approval_dt				timestamp
+); /* Here I decided to relate the transfers table to the requests table so the source_fk and dest_fk are there instead of here. In addition, I chose to include the approval data here. */
