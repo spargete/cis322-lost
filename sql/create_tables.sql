@@ -26,7 +26,7 @@ CREATE TABLE assets (
 	asset_pk				serial primary key,
 	asset_tag				varchar(16),
 	description				text,
-	intake_dt				timestamp
+	intake_dt				timestamp,
 	disposed_dt				timestamp DEFAULT NULL
 ); /* The assets table now stores intake date as well as disposed date -- this makes for easier exporting of data */
 
