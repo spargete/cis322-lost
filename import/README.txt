@@ -1,0 +1,3 @@
+Import scripts for importing from .csv into a LOST database.
+import_data.sh -- Usage: ./import_data.sh <dbname> <input dir> Runs a Python script which creates a .sql file containing the insert statements necessary to insert the data into the database. This script then runs that .sql file.
+import_data.py -- Copied into the import directory so that it can access the files, then run by the import_data.sh file. Generates a .sql file with the insert statements necessary.
