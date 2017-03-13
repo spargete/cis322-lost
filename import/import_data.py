@@ -30,8 +30,9 @@ def import_transfers():
 				'{}', (SELECT facility_pk FROM facilities WHERE facility_fcode='{}'), 
 				(SELECT facility_pk FROM facilities WHERE facility_fcode='{}'), (SELECT asset_pk FROM assets WHERE asset_tag='{}'));
 				""".format(s[1], s[2], s[3], s[4], s[5], s[6], s[0]))
-			print("""INSERT INTO transfers (request_fk, asset_fk, load_dt, unload_dt) VALUES ((SELECT request_pk FROM transfer_requests WHERE asset_tag='{}' 
-				AND request_dt=(SELECT max(request_dt) FROM transfer_requests WHERE asset_tag='{}')), (SELECT asset_pk FROM assets WHERE asset_tag='{}'), '{}', '{}');""".format(s[0], s[0], s[0], s[7], s[8]))
+			print("""INSERT INTO transfers (request_fk, asset_fk, load_dt, unload_dt) VALUES ((SELECT request_pk FROM transfer_requests WHERE asset_fk=(SELECT asset_pk FROM assets WHERE asset_tag='{}') 
+				AND request_dt=(SELECT max(request_dt) FROM transfer_requests WHERE asset_fk=(SELECT asset_pk FROM assets WHERE asset_tag='{}'))), 
+				(SELECT asset_pk FROM assets WHERE asset_tag='{}'), '{}', '{}');""".format(s[0], s[0], s[0], s[7], s[8]))
 			print("UPDATE asset_at SET depart_dt='{}' WHERE asset_fk=(SELECT asset_pk FROM assets WHERE asset_tag='{}') AND depart_dt IS NULL;".format(s[7], s[0]))
 			print("""INSERT INTO asset_at (asset_fk, facility_fk, arrive_dt) VALUES ((SELECT asset_pk FROM assets WHERE asset_tag='{}'), 
 				(SELECT facility_pk FROM facilities WHERE facility_fcode='{}'), '{}');""".format(s[0], s[6], s[8]))
