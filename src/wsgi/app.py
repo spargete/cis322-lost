@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session, redirect, url_for
 import psycopg2
 from config import dbname, dbhost, dbport, secret_key
 from datetime import datetime
+import json
 
 app = Flask(__name__)
 
@@ -26,21 +27,27 @@ def activate_user():
 		except ProgrammingError:
 			result = None
 
+		dat = dict()
+
 		if result == None:
 			cur.execute('INSERT INTO users (username, password) VALUES (%s, %s);', (username, password))
 			cur.execute('INSERT INTO user_is (role_fk, user_fk) VALUES ((SELECT role_pk FROM roles WHERE role_name=%s), (SELECT user_pk FROM users WHERE username=%s));', (role, username))
 			conn.commit()
 			cur.close()
 			conn.close()
-			return ('user %s added with password %s and role %s', (username, password, role))
+			dat['result'] = ('user %s added with password %s and role %s', (username, password, role))
+			data = json.dumps(dat)
+			return data
 		else:
 			#Update password, active
 			cur.execute('UPDATE users SET password=%s, active=%s WHERE username=%s;', (password, True, username))
 			conn.commit()
 			cur.close()
 			conn.close()
-			return ('user %s activated with new password %s', (username, password))
-
+			dat['result'] = ('user %s activated with new password %s', (username, password))
+			data = json.dumps(dat)
+			return data
+			
 @app.route('/revoke_user', methods = ['POST',])
 def revoke_user():
 	if request.method == 'POST':

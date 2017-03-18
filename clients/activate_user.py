@@ -25,10 +25,10 @@ def main():
     print("Activating user: %s"%args['username'])
 
     # Setup the data to send
-    sargs = dict()
-    sargs['arguments']=json.dumps(args)
-    sargs['signature']=''
-    data = urlencode(sargs)
+    #sargs = dict()
+    #sargs['arguments']=json.dumps(args)
+    #sargs['signature']=''
+    data = urlencode(args)
     #print("sending:\n%s"%data)
     
     # Make the resquest
@@ -37,11 +37,10 @@ def main():
     res = urlopen(req)
     
     # Parse the response
-    resp = res.read().decode('ascii')
+    resp = json.loads(res.read().decode('ascii'))
     
     # Print the result code
-    print("Call to LOST returned: %s"%resp)
-    
+    print("Call to LOST returned: %s"%resp['result'])
 
 if __name__=='__main__':
     main()
