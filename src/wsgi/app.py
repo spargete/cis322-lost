@@ -12,8 +12,8 @@ def logout():
 	session['logged_in'] = False
 	return redirect(url_for('login'))
 
-@app.route('/create_user', methods = ['GET', 'POST'])
-def create_user():
+@app.route('/activate_user', methods = ['POST',])
+def activate_user():
 	if request.method == 'POST':
 		conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
 		cur = conn.cursor()
@@ -32,13 +32,37 @@ def create_user():
 			conn.commit()
 			cur.close()
 			conn.close()
-			return render_template('user_added.html')
+			return ('user %s added with password %s and role %s', (username, password, role))
 		else:
+			#Update password, active
+			cur.execute('UPDATE users SET password=%s, active=%s WHERE username=%s;', (password, True, username))
+			conn.commit()
 			cur.close()
 			conn.close()
-			return render_template('user_exists.html')
+			return ('user %s activated with new password %s', (username, password))
 
-	return render_template('create_user.html')
+@app.route('/revoke_user', methods = ['POST',])
+def revoke_user():
+	if request.method == 'POST':
+		conn = psycopg2.connect(dbname=dbname, host=dbhost, port=dbport)
+		cur = conn.cursor()
+		username = request.form['username']
+		cur.execute('SELECT username FROM users WHERE username=%s;', (username,))
+		try:
+			result = cur.fetchone()
+		except ProgrammingError:
+			result = None
+
+		if result == None:
+			cur.close()
+			conn.close()
+			return ('user %s not found', (username,))
+		else:
+			cur.execute('UPDATE users SET active=%s WHERE username=%s;', (False, username))
+			conn.commit()
+			cur.close()
+			conn.close()
+			return ('user access for user %s successfully revoked', (username, ))
 
 @app.route('/')
 @app.route('/login', methods = ['GET', 'POST'])
@@ -48,13 +72,13 @@ def login():
 		cur = conn.cursor()
 		username = request.form['username']
 		password = request.form['password']
-		cur.execute('SELECT username, password, role_name FROM users INNER JOIN user_is ON user_pk=user_fk INNER JOIN roles ON role_pk=role_fk WHERE username=%s AND password=%s;', (username, password))
+		cur.execute('SELECT username, password, role_name, active FROM users INNER JOIN user_is ON user_pk=user_fk INNER JOIN roles ON role_pk=role_fk WHERE username=%s AND password=%s;', (username, password))
 		try:
 			result = cur.fetchone()
 		except ProgrammingError:
 			result = None
 
-		if result == None:
+		if result == None or result[3] == False:
 			cur.close()
 			conn.close()
 			return render_template('incorrect_credentials.html')
