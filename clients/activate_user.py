@@ -6,6 +6,8 @@ import datetime
 from urllib.request import Request, urlopen
 from urllib.parse   import urlencode
 
+roles = {'logofc' : 'Logistics Officer', 'facofc' : 'Facilities Officer'}
+
 def main():
     # Check the CLI arguments
     if len(sys.argv)<5 :
@@ -14,10 +16,10 @@ def main():
     
     # Prep the arguments blob
     args = dict()
-    args['timestamp'] = datetime.datetime.utcnow().isoformat()
+    #args['timestamp'] = datetime.datetime.utcnow().isoformat()
     args['username']  = sys.argv[2]
     args['password']  = sys.argv[3]
-    args['role']      = sys.argv[4]
+    args['role']      = roles[sys.argv[4]]
 
     # Print a message to let the user know what is being tried
     print("Activating user: %s"%args['username'])
@@ -30,7 +32,8 @@ def main():
     #print("sending:\n%s"%data)
     
     # Make the resquest
-    req = Request(sys.argv[1] + 'activate_user',data.encode('ascii'),method='POST')
+    location = sys.argv[1] + 'activate_user'
+    req = Request(location, data.encode('ascii'), method='POST')
     res = urlopen(req)
     
     # Parse the response
