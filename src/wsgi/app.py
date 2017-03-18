@@ -35,8 +35,8 @@ def activate_user():
 			conn.commit()
 			cur.close()
 			conn.close()
-			result = ('user %s added with password %s and role %s'%(username, password, role))
-			dat['result'] = result
+			returnValue = ('user %s added with password %s and role %s'%(username, password, role))
+			dat['result'] = returnValue
 			data = json.dumps(dat)
 			return data
 		else:
@@ -45,8 +45,8 @@ def activate_user():
 			conn.commit()
 			cur.close()
 			conn.close()
-			result = ('user %s activated with new password %s'%(username, password))
-			dat['result'] = result
+			returnValue = ('user %s activated with new password %s'%(username, password))
+			dat['result'] = returnValue
 			data = json.dumps(dat)
 			return data
 
@@ -62,16 +62,25 @@ def revoke_user():
 		except ProgrammingError:
 			result = None
 
+		dat = dict()
+
 		if result == None:
 			cur.close()
 			conn.close()
-			return ('user %s not found'%(username,))
+			returnValue = ('user %s not found'%username)
+			dat['result'] = returnValue
+			data = json.dumps(dat).encode('ascii')
+			return data
+
 		else:
 			cur.execute('UPDATE users SET active=%s WHERE username=%s;', (False, username))
 			conn.commit()
 			cur.close()
 			conn.close()
-			return ('user access for user %s successfully revoked'%(username, ))
+			returnValue = ('user access for user %s successfully revoked'%username)
+			dat['result'] = returnValue
+			data = json.dumps(dat).encode('ascii')
+			return data
 
 @app.route('/')
 @app.route('/login', methods = ['GET', 'POST'])
